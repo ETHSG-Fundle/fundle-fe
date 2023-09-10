@@ -26,11 +26,14 @@ export default function Card({
         <div>❤️</div>
       </div>
       <Image
-        className="mx-6 mt-16 mb-4"
+        className="mx-6 mt-6 mb-4 object-cover h-48"
         src={viewModel.image}
         alt="placeholder"
+        // height="100"
+        // width=
+        // fill={true}
       />
-      <div>{viewModel.description}</div>
+      <div className="line-clamp-2">{viewModel.description}</div>
       {/* <div className="flex space-x-2 mt-4">
         <Button
           title={secondaryActionTitle}
