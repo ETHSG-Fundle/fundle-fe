@@ -13,8 +13,9 @@ export default function page({ params }: { params: { id: number } }) {
       <div className="flex flex-col pr-16 w-3/5">
         <div className="flex justify-center">
           <Image
+            className="w-full h-96 object-cover"
             src={viewModel.image}
-            width={500}
+            // width={500}
             // height={300}
             alt="test"
           />
