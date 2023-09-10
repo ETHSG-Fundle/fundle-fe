@@ -1,11 +1,14 @@
+import Image, { StaticImageData } from "next/image";
 import React from "react";
 
 export default function ChainSelector({
   labels,
+  images,
   activeTab,
   setActiveTab,
 }: {
   labels: string[];
+  images: StaticImageData[];
   activeTab: number;
   setActiveTab: (tab: number) => void;
 }) {
@@ -19,18 +22,21 @@ export default function ChainSelector({
         className={activeTab === 0 ? activeStyle : inactiveStyle}
         onClick={() => setActiveTab(0)}
       >
+        <Image src={images[0]} alt='icon' width={20} className="mr-2"/>
         {labels[0]}
       </div>
       <div
         className={activeTab === 1 ? activeStyle : inactiveStyle}
         onClick={() => setActiveTab(1)}
       >
+        <Image src={images[1]} alt='icon' width={20} className="mr-2"/>
         {labels[1]}
       </div>
       <div
         className={activeTab === 2 ? activeStyle : inactiveStyle}
         onClick={() => setActiveTab(2)}
       >
+        <Image src={images[2]} alt='icon' width={20} className="mr-2"/>
         {labels[2]}
       </div>
     </div>

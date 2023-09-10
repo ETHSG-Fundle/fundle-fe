@@ -6,11 +6,15 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import { BeneficiaryViewModel, dummyData } from "@/constants/ViewModels";
 import ChainSelector from "@/components/ChainSelector";
+import ETH from "../../../../public/eth.png"
+import LINEA from "../../../../public/linea.png"
+import MANTLE from "../../../../public/mantle.png"
 
 export default function Page({ params }: { params: { id: number } }) {
   const viewModel: BeneficiaryViewModel = dummyData[params.id];
 
   const chains = ["Ethereum", "Mantle", "Linea"];
+  const images = [ETH, MANTLE, LINEA]
   const [tab, setTab] = useState(0);
 
   return (
@@ -58,6 +62,7 @@ export default function Page({ params }: { params: { id: number } }) {
             <p>Select chain:</p>
             <ChainSelector
               labels={chains}
+              images={images}
               activeTab={tab}
               setActiveTab={setTab}
             />
