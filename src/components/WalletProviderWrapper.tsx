@@ -12,7 +12,14 @@ const ethereumRopsten = {
   rpcUrl: `https://ropsten.infura.io/v3/${INFURA_KEY}`,
 };
 
-const chains = [ethereumRopsten];
+const ethereumGoerli = {
+  id: "0x5",
+  token: "ETH",
+  label: "Goerli",
+  rpcUrl: `https://goerli.infura.io/v3/${INFURA_KEY}`,
+};
+
+const chains = [ethereumGoerli, ethereumRopsten];
 const wallets = [injectedModule()];
 
 const web3Onboard = init({
