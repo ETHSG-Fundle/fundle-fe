@@ -16,7 +16,7 @@ export default function Tabs({
   const inactiveStyle =
     "h-full rounded-full p-4 px-8 flex items-center cursor-pointer -m-2";
   return (
-    <div className="flex justify-center items-center bg-gray rounded-full h-10 text-sm text-white">
+    <div className="flex justify-center items-center bg-gray rounded-full h-10 text-sm text-white mt-2">
       <div
         className={activeTab === 0 ? activeStyle : inactiveStyle}
         onClick={() => setActiveTab(0)}

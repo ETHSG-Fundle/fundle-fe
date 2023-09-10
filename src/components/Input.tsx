@@ -5,7 +5,7 @@ export default function Input({
   placeholder,
   unit,
 }: {
-  className: string;
+  className?: string;
   placeholder?: string;
   unit?: string;
 }) {
@@ -15,7 +15,7 @@ export default function Input({
         className={`border-2 border-gray h-12 rounded-md p-4 text-xl ${className}`}
         placeholder={placeholder}
       />
-      {unit && <span className="-ml-12 font-display text-2xl">{unit}</span>}
+      {unit && <span className="-ml-10 font-display text-2xl">{unit}</span>}
     </div>
   );
 }
