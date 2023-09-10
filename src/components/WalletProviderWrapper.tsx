@@ -3,7 +3,7 @@
 import { Web3OnboardProvider, init } from "@web3-onboard/react";
 import injectedModule from "@web3-onboard/injected-wallets";
 
-const INFURA_KEY = process.env.INFURA_API_KEY;
+const INFURA_KEY = process.env.NEXT_PUBLIC_INFURA_API_KEY;
 
 const ethereumRopsten = {
   id: "0x3",
@@ -19,7 +19,7 @@ const ethereumGoerli = {
   rpcUrl: `https://goerli.infura.io/v3/${INFURA_KEY}`,
 };
 
-const chains = [ethereumGoerli, ethereumRopsten];
+const chains = [ethereumGoerli];
 const wallets = [injectedModule()];
 
 const web3Onboard = init({

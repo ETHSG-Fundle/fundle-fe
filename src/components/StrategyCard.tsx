@@ -12,12 +12,16 @@ export default function StrategyCard({
   activeTab,
   setActiveTab,
   setInputValue,
+  userBalance,
+  depositHandler,
 }: {
   viewModel: StrategyViewModel;
   inputValue: string;
   activeTab: number;
   setActiveTab: (tab: number) => void;
   setInputValue: (value: string) => void;
+  userBalance: string;
+  depositHandler: () => void;
 }) {
   return (
     <div className="flex flex-col justify-center w-3/4 bg-red-light rounded-xl p-8">
@@ -43,7 +47,7 @@ export default function StrategyCard({
         setActiveTab={setActiveTab}
       />
       <div className="font-display text-xl mt-4">
-        Your Balance: {viewModel.balance} {viewModel.currency}
+        Your Balance: {userBalance} {viewModel.currency}
       </div>
       <div className="font-display text-xl mt-2">Yield Generated:</div>
       <div className="w-4/5 flex">
@@ -65,6 +69,7 @@ export default function StrategyCard({
         className="mt-4"
         isRounded={true}
         title={activeTab === 0 ? "Deposit" : "Withdraw"}
+        onClick={depositHandler}
       />
     </div>
   );
