@@ -3,7 +3,7 @@
 import { Web3OnboardProvider, init } from "@web3-onboard/react";
 import injectedModule from "@web3-onboard/injected-wallets";
 
-const INFURA_KEY = "";
+const INFURA_KEY = process.env.INFURA_API_KEY;
 
 const ethereumRopsten = {
   id: "0x3",
