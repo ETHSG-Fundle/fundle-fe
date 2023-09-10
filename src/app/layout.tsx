@@ -4,6 +4,7 @@ import { Inter, Londrina_Solid } from "next/font/google";
 
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import { WalletProvider } from "@/components/WalletProviderWrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,9 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${londrinaSolid.variable}`}>
-        <NavBar />
-        {children}
-        <Footer />
+        <WalletProvider>
+          <NavBar />
+          {children}
+          <Footer />
+        </WalletProvider>
       </body>
     </html>
   );
