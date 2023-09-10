@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import ProgressBar from "@/components/ProgressBar";
@@ -52,6 +53,9 @@ export default function page({ params }: { params: { id: number } }) {
             <Input
               className={"w-full mb-4"}
               placeholder="eg. 1000 USDC"
+              onChange={(c) => {
+                console.log(`${c}`);
+              }}
             ></Input>
             <Button className={"w-full"} title="Donate" isRounded={true} />
           </div>
