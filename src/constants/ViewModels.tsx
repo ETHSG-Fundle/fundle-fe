@@ -10,9 +10,6 @@ export interface BeneficiaryViewModel {
   image: StaticImageData;
 }
 
-<<<<<<< Updated upstream
-export const dummyData: BeneficiaryViewModel[] = [
-=======
 export interface StrategyViewModel {
   id: number;
   name: string;
@@ -24,8 +21,7 @@ export interface StrategyViewModel {
   description: string;
 }
 
-export const dummyData: [BeneficiaryViewModel] = [
->>>>>>> Stashed changes
+export const dummyData: BeneficiaryViewModel[] = [
   {
     id: 0,
     name: "World Wildlife Fund",
@@ -48,7 +44,7 @@ export const dummyData: [BeneficiaryViewModel] = [
   },
 ];
 
-export const strategyDummyData : StrategyViewModel[] = [
+export const strategyDummyData: StrategyViewModel[] = [
   {
     id: 0,
     name: "sDai",
@@ -68,5 +64,5 @@ export const strategyDummyData : StrategyViewModel[] = [
     userYield: 0.5,
     totalYield: 5,
     description: "this is a description for the strategy",
-  }
-]
+  },
+];
