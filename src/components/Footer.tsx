@@ -7,12 +7,9 @@ export default function Footer() {
         <div className="md:flex md:justify-between px-4">
           <div className="flex-col mb-6 md:mb-0">
             <div className="self-center text-2xl font-semibold whitespace-nowrap mb-5">
-              ETH GangGang
+              Fundle
             </div>
-            <div className="max-w-md">
-              Our vision is to make giving convenient and make the smallest
-              contributions count.
-            </div>
+            <div className="max-w-md">Farm to Fund</div>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:gap-24 sm:grid-cols-3">
             <div>
@@ -88,10 +85,7 @@ export default function Footer() {
             ©2023 ETH GangGang. All rights reserved
           </span>
           <div className="flex mt-4 space-x-5 sm:justify-center sm:mt-0">
-            <a
-              href="#"
-              className="text-gray-500 hover:text-gray-900"
-            >
+            <a href="#" className="text-gray-500 hover:text-gray-900">
               <svg
                 className="w-4 h-4"
                 aria-hidden="true"
@@ -107,10 +101,7 @@ export default function Footer() {
               </svg>
               <span className="sr-only">Facebook page</span>
             </a>
-            <a
-              href="#"
-              className="text-gray-500 hover:text-gray-900"
-            >
+            <a href="#" className="text-gray-500 hover:text-gray-900">
               <svg
                 className="w-4 h-4"
                 aria-hidden="true"
@@ -122,10 +113,7 @@ export default function Footer() {
               </svg>
               <span className="sr-only">Discord community</span>
             </a>
-            <a
-              href="#"
-              className="text-gray-500 hover:text-gray-900"
-            >
+            <a href="#" className="text-gray-500 hover:text-gray-900">
               <svg
                 className="w-4 h-4"
                 aria-hidden="true"
@@ -141,10 +129,7 @@ export default function Footer() {
               </svg>
               <span className="sr-only">Twitter page</span>
             </a>
-            <a
-              href="#"
-              className="text-gray-500 hover:text-gray-900"
-            >
+            <a href="#" className="text-gray-500 hover:text-gray-900">
               <svg
                 className="w-4 h-4"
                 aria-hidden="true"

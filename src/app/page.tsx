@@ -1,6 +1,7 @@
 "use client";
 //libraries
 import ethers from "ethers";
+import { useRouter } from "next/navigation";
 
 //components
 import Button from "@/components/Button";
@@ -9,23 +10,32 @@ import Card from "@/components/Card";
 import Gallery from "@/components/Gallery";
 
 export default function Home() {
-  const buttonHandler = () => {
-    console.log("delete me");
+  const router = useRouter();
+
+  const goToFund = () => {
+    router.push("/fund");
+  };
+
+  const goToFarm = () => {
+    router.push("/farm");
   };
 
   const landingSection = (
     <section className="flex h-[calc(100vh-76px)] items-center justify-between">
       <div className="max-w-lg mv-auto">
-        <p className="-mb-3 font-light text-slate-700">This is some caption</p>
-        <h1>This is a generic title</h1>
+        <p className="-mb-3 font-light text-slate-700">Farm to Fund</p>
+        <h1>Fundle</h1>
         <p className="font-light text-slate-500 mb-3">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation.
+          Tired of picking beneficiaries to support?
+          <br />
+          Want to donate for free?
+          <br />
+          With Fundle, we take your capital and earn yield on it, donating it
+          quadratically to the community's favourite beneficiaries!
         </p>
         <div className="flex gap-2">
-          <Button onClick={buttonHandler} title="Button" />
-          <Button isSecondary={true} onClick={buttonHandler} title="Button" />
+          <Button onClick={goToFund} title="Fund!" />
+          <Button isSecondary={true} onClick={goToFarm} title="Farm!" />
         </div>
       </div>
       <Image
@@ -40,14 +50,13 @@ export default function Home() {
   const banner = (
     <div className="flex bg-red-light p-8 my-5 rounded-md justify-between">
       <div className="mt-2 text-2xl font-light">
-        <span className="font-bold">This is some generic text. </span>
-        This is more generic text
+        <span className="font-bold">Are you an NPO? </span>
+        Click here to register with us!
       </div>
-      <Button title="Action"></Button>
+      <Button title="Register!"></Button>
     </div>
   );
-
-  const infoCard = (
+  const infoCard1 = (
     <div className="flex flex-col items-center max-w-[12rem]">
       <Image
         src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgdmlld0JveD0iMCAwIDMyMCAzMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJub25lIiAvPjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIxMCIgeD0iMTQwIiB5PSIxMCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjkwIiB5PSIyMCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iNzAiIGhlaWdodD0iMTAiIHg9IjEyMCIgeT0iMjAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjExMCIgaGVpZ2h0PSIxMCIgeD0iMTAwIiB5PSIzMCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjEwMCIgeT0iNDAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjcwIiBoZWlnaHQ9IjEwIiB4PSIxMjAiIHk9IjQwIiBmaWxsPSIjMDY4OTQwIiAvPjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgeD0iMTEwIiB5PSI1MCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iMzAiIGhlaWdodD0iMTAiIHg9IjE0MCIgeT0iNTAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiB4PSIxMTAiIHk9IjYwIiBmaWxsPSIjMDY4OTQwIiAvPjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgeD0iMTUwIiB5PSI2MCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjEyMCIgeT0iNzAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiB4PSIxNjAiIHk9IjcwIiBmaWxsPSIjMDY4OTQwIiAvPjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgeD0iMTIwIiB5PSI4MCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjE3MCIgeT0iODAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiB4PSI5MCIgeT0iOTAiIGZpbGw9IiNkMjIyMDkiIC8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiB4PSIxMjAiIHk9IjkwIiBmaWxsPSIjMDY4OTQwIiAvPjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgeD0iMTMwIiB5PSI5MCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjE4MCIgeT0iOTAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjEwIiB4PSIxOTAiIHk9IjkwIiBmaWxsPSIjZmYxYTBiIiAvPjxyZWN0IHdpZHRoPSI5MCIgaGVpZ2h0PSIxMCIgeD0iNzAiIHk9IjEwMCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iOTAiIGhlaWdodD0iMTAiIHg9IjE2MCIgeT0iMTAwIiBmaWxsPSIjZmYxYTBiIiAvPjxyZWN0IHdpZHRoPSI5MCIgaGVpZ2h0PSIxMCIgeD0iNjAiIHk9IjExMCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iMTEwIiBoZWlnaHQ9IjEwIiB4PSIxNTAiIHk9IjExMCIgZmlsbD0iI2ZmMWEwYiIgLz48cmVjdCB3aWR0aD0iOTAiIGhlaWdodD0iMTAiIHg9IjYwIiB5PSIxMjAiIGZpbGw9IiNkMjIyMDkiIC8+PHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjEwIiB4PSIxNTAiIHk9IjEyMCIgZmlsbD0iI2ZmMWEwYiIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjI0MCIgeT0iMTIwIiBmaWxsPSIjZmZmZmZmIiAvPjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgeD0iMjUwIiB5PSIxMjAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjEwIiB4PSI1MCIgeT0iMTMwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSIxMzAiIGhlaWdodD0iMTAiIHg9IjE0MCIgeT0iMTMwIiBmaWxsPSIjZmYxYTBiIiAvPjxyZWN0IHdpZHRoPSI5MCIgaGVpZ2h0PSIxMCIgeD0iNTAiIHk9IjE0MCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iMTMwIiBoZWlnaHQ9IjEwIiB4PSIxNDAiIHk9IjE0MCIgZmlsbD0iI2ZmMWEwYiIgLz48cmVjdCB3aWR0aD0iOTAiIGhlaWdodD0iMTAiIHg9IjUwIiB5PSIxNTAiIGZpbGw9IiNkMjIyMDkiIC8+PHJlY3Qgd2lkdGg9IjEzMCIgaGVpZ2h0PSIxMCIgeD0iMTQwIiB5PSIxNTAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjEwIiB4PSI1MCIgeT0iMTYwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSIxMzAiIGhlaWdodD0iMTAiIHg9IjE0MCIgeT0iMTYwIiBmaWxsPSIjZmYxYTBiIiAvPjxyZWN0IHdpZHRoPSI5MCIgaGVpZ2h0PSIxMCIgeD0iNTAiIHk9IjE3MCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iMTMwIiBoZWlnaHQ9IjEwIiB4PSIxNDAiIHk9IjE3MCIgZmlsbD0iI2ZmMWEwYiIgLz48cmVjdCB3aWR0aD0iOTAiIGhlaWdodD0iMTAiIHg9IjYwIiB5PSIxODAiIGZpbGw9IiNkMjIyMDkiIC8+PHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjEwIiB4PSIxNTAiIHk9IjE4MCIgZmlsbD0iI2ZmMWEwYiIgLz48cmVjdCB3aWR0aD0iMzAiIGhlaWdodD0iMTAiIHg9IjIxMCIgeT0iMTgwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIxMCIgeD0iMjQwIiB5PSIxODAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjEwIiB4PSI2MCIgeT0iMTkwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMCIgeD0iMTUwIiB5PSIxOTAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiB4PSIyMDAiIHk9IjE5MCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMTAiIHg9IjIxMCIgeT0iMTkwIiBmaWxsPSIjZmZmZmZmIiAvPjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIxMCIgeD0iMjMwIiB5PSIxOTAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjEwIiB4PSI3MCIgeT0iMjAwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSI5MCIgaGVpZ2h0PSIxMCIgeD0iMTYwIiB5PSIyMDAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjEwIiB4PSI5MCIgeT0iMjEwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMCIgeD0iMTgwIiB5PSIyMTAiIGZpbGw9IiNmZjFhMGIiIC8+PC9zdmc+"
@@ -55,31 +64,46 @@ export default function Home() {
         height={50}
         alt="test"
       />
-      <p className="text-center text-lg">Text 1</p>
+      <p className="text-center text-lg">Fund</p>
       <p className="text-sm text-slate-500 font-light text-center mb-4">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation.
+        Small amounts have big effects in the cause you are supporting. With
+        quadratic funding, your donations have exponential impact.
       </p>
-      <Button title="Test" isRounded={true} />
+      <Button title="Fund Now!" isRounded={true} onClick={goToFund} />
+    </div>
+  );
+
+  const infoCard2 = (
+    <div className="flex flex-col items-center max-w-[12rem]">
+      <Image
+        src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgdmlld0JveD0iMCAwIDMyMCAzMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJub25lIiAvPjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIxMCIgeD0iMTQwIiB5PSIxMCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjkwIiB5PSIyMCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iNzAiIGhlaWdodD0iMTAiIHg9IjEyMCIgeT0iMjAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjExMCIgaGVpZ2h0PSIxMCIgeD0iMTAwIiB5PSIzMCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjEwMCIgeT0iNDAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjcwIiBoZWlnaHQ9IjEwIiB4PSIxMjAiIHk9IjQwIiBmaWxsPSIjMDY4OTQwIiAvPjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgeD0iMTEwIiB5PSI1MCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iMzAiIGhlaWdodD0iMTAiIHg9IjE0MCIgeT0iNTAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiB4PSIxMTAiIHk9IjYwIiBmaWxsPSIjMDY4OTQwIiAvPjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgeD0iMTUwIiB5PSI2MCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjEyMCIgeT0iNzAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiB4PSIxNjAiIHk9IjcwIiBmaWxsPSIjMDY4OTQwIiAvPjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgeD0iMTIwIiB5PSI4MCIgZmlsbD0iIzA2ODk0MCIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjE3MCIgeT0iODAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiB4PSI5MCIgeT0iOTAiIGZpbGw9IiNkMjIyMDkiIC8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiB4PSIxMjAiIHk9IjkwIiBmaWxsPSIjMDY4OTQwIiAvPjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgeD0iMTMwIiB5PSI5MCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjE4MCIgeT0iOTAiIGZpbGw9IiMwNjg5NDAiIC8+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjEwIiB4PSIxOTAiIHk9IjkwIiBmaWxsPSIjZmYxYTBiIiAvPjxyZWN0IHdpZHRoPSI5MCIgaGVpZ2h0PSIxMCIgeD0iNzAiIHk9IjEwMCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iOTAiIGhlaWdodD0iMTAiIHg9IjE2MCIgeT0iMTAwIiBmaWxsPSIjZmYxYTBiIiAvPjxyZWN0IHdpZHRoPSI5MCIgaGVpZ2h0PSIxMCIgeD0iNjAiIHk9IjExMCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iMTEwIiBoZWlnaHQ9IjEwIiB4PSIxNTAiIHk9IjExMCIgZmlsbD0iI2ZmMWEwYiIgLz48cmVjdCB3aWR0aD0iOTAiIGhlaWdodD0iMTAiIHg9IjYwIiB5PSIxMjAiIGZpbGw9IiNkMjIyMDkiIC8+PHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjEwIiB4PSIxNTAiIHk9IjEyMCIgZmlsbD0iI2ZmMWEwYiIgLz48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHg9IjI0MCIgeT0iMTIwIiBmaWxsPSIjZmZmZmZmIiAvPjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgeD0iMjUwIiB5PSIxMjAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjEwIiB4PSI1MCIgeT0iMTMwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSIxMzAiIGhlaWdodD0iMTAiIHg9IjE0MCIgeT0iMTMwIiBmaWxsPSIjZmYxYTBiIiAvPjxyZWN0IHdpZHRoPSI5MCIgaGVpZ2h0PSIxMCIgeD0iNTAiIHk9IjE0MCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iMTMwIiBoZWlnaHQ9IjEwIiB4PSIxNDAiIHk9IjE0MCIgZmlsbD0iI2ZmMWEwYiIgLz48cmVjdCB3aWR0aD0iOTAiIGhlaWdodD0iMTAiIHg9IjUwIiB5PSIxNTAiIGZpbGw9IiNkMjIyMDkiIC8+PHJlY3Qgd2lkdGg9IjEzMCIgaGVpZ2h0PSIxMCIgeD0iMTQwIiB5PSIxNTAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjEwIiB4PSI1MCIgeT0iMTYwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSIxMzAiIGhlaWdodD0iMTAiIHg9IjE0MCIgeT0iMTYwIiBmaWxsPSIjZmYxYTBiIiAvPjxyZWN0IHdpZHRoPSI5MCIgaGVpZ2h0PSIxMCIgeD0iNTAiIHk9IjE3MCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iMTMwIiBoZWlnaHQ9IjEwIiB4PSIxNDAiIHk9IjE3MCIgZmlsbD0iI2ZmMWEwYiIgLz48cmVjdCB3aWR0aD0iOTAiIGhlaWdodD0iMTAiIHg9IjYwIiB5PSIxODAiIGZpbGw9IiNkMjIyMDkiIC8+PHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjEwIiB4PSIxNTAiIHk9IjE4MCIgZmlsbD0iI2ZmMWEwYiIgLz48cmVjdCB3aWR0aD0iMzAiIGhlaWdodD0iMTAiIHg9IjIxMCIgeT0iMTgwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIxMCIgeD0iMjQwIiB5PSIxODAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjEwIiB4PSI2MCIgeT0iMTkwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMCIgeD0iMTUwIiB5PSIxOTAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiB4PSIyMDAiIHk9IjE5MCIgZmlsbD0iI2QyMjIwOSIgLz48cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMTAiIHg9IjIxMCIgeT0iMTkwIiBmaWxsPSIjZmZmZmZmIiAvPjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIxMCIgeD0iMjMwIiB5PSIxOTAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjEwIiB4PSI3MCIgeT0iMjAwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSI5MCIgaGVpZ2h0PSIxMCIgeD0iMTYwIiB5PSIyMDAiIGZpbGw9IiNmZjFhMGIiIC8+PHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjEwIiB4PSI5MCIgeT0iMjEwIiBmaWxsPSIjZDIyMjA5IiAvPjxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMCIgeD0iMTgwIiB5PSIyMTAiIGZpbGw9IiNmZjFhMGIiIC8+PC9zdmc+"
+        width={50}
+        height={50}
+        alt="test"
+      />
+      <p className="text-center text-lg">Farm</p>
+      <p className="text-sm text-slate-500 font-light text-center mb-4">
+        Give nothing but time. Treat GangGang Protocol like a savings account
+        and you can help our NPOs without spending anything.
+      </p>
+      <Button title="Farm Now!" isRounded={true} onClick={goToFarm} />
     </div>
   );
 
   const firstSection = (
     <section className="flex flex-col items-center py-12">
-      <h2>Some section intro text</h2>
+      <h2>How You Can Make a Difference!</h2>
       <div className="flex py-4 justify-around w-full max-w-4xl">
-        {infoCard}
-        {infoCard}
-        {infoCard}
+        {infoCard1}
+        {infoCard2}
       </div>
     </section>
   );
 
   const gallerySection = (
     <section className="flex flex-col items-center">
-      <h2>Featured</h2>
-      <p className="mb-12">Some description about featured items.</p>
+      <h2>Beneficiaries</h2>
+      <p className="mb-12">Support your favourite benefiaries on Fundle!</p>
       <Gallery />
     </section>
   );
