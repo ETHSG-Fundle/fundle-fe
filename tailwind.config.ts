@@ -9,7 +9,8 @@ const customColors = {
     DEFAULT: "#F3322C", // Overwrite default
     "hover": "#DD1009",
     "active": "#DD100950",
-    "medium": "#F3322C30"
+    "medium": "#F3322C30",
+    "light-medium": "#e0a19f",
   },
   blue: {
     DEFAULT: "#2B83F6", // Overwrite default

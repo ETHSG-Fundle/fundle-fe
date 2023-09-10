@@ -20,7 +20,7 @@ export default function StrategyCard({
   setInputValue: (value: string) => void;
 }) {
   return (
-    <div className="flex flex-col justify-center w-3/4 bg-red-light rounded-md p-8">
+    <div className="flex flex-col justify-center w-3/4 bg-red-light rounded-xl p-8">
       <div className="flex items-end justify-center w-full text-3xl">
         <Image
           src={coin}
@@ -31,7 +31,7 @@ export default function StrategyCard({
         />
         {viewModel.name}
         <div className="grow" />
-        <div className="font-display text-6xl">
+        <div className="font-display text-4xl">
           {viewModel.yieldPercentage}%
         </div>
       </div>

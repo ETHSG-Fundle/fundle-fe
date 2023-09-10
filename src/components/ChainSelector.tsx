@@ -10,11 +10,11 @@ export default function ChainSelector({
   setActiveTab: (tab: number) => void;
 }) {
   const activeStyle =
-    "bg-red h-full rounded-full flex items-center cursor-pointer w-1/3 justify-center";
+    "bg-red h-full rounded-full flex items-center cursor-pointer w-1/3 justify-center text-white";
   const inactiveStyle =
-    "h-full rounded-full flex items-center cursor-pointer w-1/3 justify-center";
+    "h-full rounded-full flex items-center cursor-pointer w-1/3 justify-center text-red-light-medium";
   return (
-    <div className="flex justify-center items-center bg-gray rounded-full h-12 text-sm text-white p-2 my-4">
+    <div className="flex justify-center items-center bg-white rounded-full h-12 text-sm p-2 my-4">
       <div
         className={activeTab === 0 ? activeStyle : inactiveStyle}
         onClick={() => setActiveTab(0)}

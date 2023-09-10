@@ -13,7 +13,8 @@ export default function Page() {
   return (
     <div className="flex flex-col items-center">
       <h1>Farm</h1>
-      <div className="grid grid-cols-2 w-2/3 place-items-center gap-x-0">
+      {`Want to donate without spending a single cent? Simply park your funds with us, and we'll do the rest!`}
+      <div className="grid grid-cols-2 w-2/3 mt-4 place-items-center">
         {strategyDummyData.map((strategy: StrategyViewModel) => (
           <StrategyCard
             key={strategy.id}

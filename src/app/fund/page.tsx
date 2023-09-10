@@ -11,7 +11,7 @@ export default function Page() {
       <h1>Total Donations: $200,000</h1>
       <p>
         Not sure who to donate to? Donate directly to the pool and let the
-        community decide where your funds go to!
+        community decide where your funds go!
       </p>
       <div className="mt-4 flex-col flex items-start gap-4">
         <Input
@@ -29,8 +29,7 @@ export default function Page() {
       <section className="ml-8">
         <h1>Accredited Projects</h1>
         <p>
-          The distribution of sponsored pool will depend on how many people
-          chipped in for a project and how much they gave.
+          Donate to your favourite causes!
         </p>
       </section>
       <section>{banner}</section>
