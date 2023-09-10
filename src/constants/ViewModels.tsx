@@ -13,6 +13,7 @@ export interface BeneficiaryViewModel {
 export interface StrategyViewModel {
   id: number;
   name: string;
+  currency: string;
   image: StaticImageData;
   yieldPercentage: number;
   balance: number;
@@ -48,21 +49,23 @@ export const strategyDummyData: StrategyViewModel[] = [
   {
     id: 0,
     name: "sDai",
+    currency: "DAI",
     image: wwfImage,
     yieldPercentage: 0.5,
     balance: 100,
     userYield: 0.5,
     totalYield: 5,
-    description: "this is a description for the strategy",
+    description: "sDAI, or SavingsDAI is a yield generating strategy for DAI.",
   },
   {
     id: 1,
     name: "pendle?",
+    currency: "PENDLE",
     image: wwfImage,
     yieldPercentage: 0.5,
     balance: 100,
     userYield: 0.5,
     totalYield: 5,
-    description: "this is a description for the strategy",
+    description: "PENDLE provides risk free yield on the underlying asset.",
   },
 ];

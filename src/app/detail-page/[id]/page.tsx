@@ -5,7 +5,6 @@ import ProgressBar from "@/components/ProgressBar";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import { BeneficiaryViewModel, dummyData } from "@/constants/ViewModels";
-import Dropdown from "@/components/ChainSelector";
 import ChainSelector from "@/components/ChainSelector";
 
 export default function Page({ params }: { params: { id: number } }) {

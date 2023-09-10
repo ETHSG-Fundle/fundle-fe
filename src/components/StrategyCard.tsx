@@ -22,23 +22,42 @@ export default function StrategyCard({
   return (
     <div className="flex flex-col justify-center w-3/4 bg-red-light rounded-md p-8">
       <div className="flex items-end justify-center w-full text-3xl">
-        <Image src={coin} width={60} height={60} alt="icon" className="-mb-2 mr-2" />
+        <Image
+          src={coin}
+          width={60}
+          height={60}
+          alt="icon"
+          className="-mb-2 mr-2"
+        />
         {viewModel.name}
         <div className="grow" />
-        <div className="font-display text-6xl">{viewModel.yieldPercentage}%</div>
+        <div className="font-display text-6xl">
+          {viewModel.yieldPercentage}%
+        </div>
       </div>
+      <p className="ml-2 mt-2 text-sm italic">Ethereum Mainnet</p>
       <Tabs
         label1="Deposit"
         label2="Withdraw"
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      <div className="font-display text-xl mt-4">Your Balance: {viewModel.balance}</div>
-      <div className="font-display text-xl mt-2">Yield Generated: </div>
-      <div>Your Yield: {viewModel.userYield}</div>
-      <div>Total Yield: {viewModel.totalYield}</div>
+      <div className="font-display text-xl mt-4">
+        Your Balance: {viewModel.balance} {viewModel.currency}
+      </div>
+      <div className="font-display text-xl mt-2">Yield Generated:</div>
+      <div className="w-4/5 flex">
+        Your Yield:
+        <div className="grow" />
+        {viewModel.userYield} {viewModel.currency}
+      </div>
+      <div className="w-4/5 flex">
+        Total Yield:
+        <div className="grow" />
+        {viewModel.totalYield} {viewModel.currency}
+      </div>
 
-      <div className="mb-6">{viewModel.description}</div>
+      <div className="my-6">{viewModel.description}</div>
 
       <Input unit="DAI" className="w-full -ml-3" onChange={setInputValue} />
 
