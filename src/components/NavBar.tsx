@@ -53,7 +53,7 @@ export default function NavBar() {
 
   const connectButtonHandler = () => {
     if (wallet) {
-      disconnect(wallet);
+      disconnect({ label: wallet.label });
       setAccount(null);
     } else {
       connect();
