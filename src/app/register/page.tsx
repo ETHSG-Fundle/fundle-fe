@@ -1,7 +1,6 @@
 "use client";
 
-import Tabs from "@/components/Tabs";
-import WideCard from "@/components/StrategyCard";
+import Dropdown from "@/components/ChainSelector";
 import React, { useState } from "react";
 
 export default function Page() {

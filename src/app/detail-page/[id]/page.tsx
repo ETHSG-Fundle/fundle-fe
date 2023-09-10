@@ -1,13 +1,19 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import ProgressBar from "@/components/ProgressBar";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import { BeneficiaryViewModel, dummyData } from "@/constants/ViewModels";
+import Dropdown from "@/components/ChainSelector";
+import ChainSelector from "@/components/ChainSelector";
 
-export default function page({ params }: { params: { id: number } }) {
+export default function Page({ params }: { params: { id: number } }) {
   const viewModel: BeneficiaryViewModel = dummyData[params.id];
+
+  const chains = ["Ethereum", "Mantle", "Linea"];
+  const [tab, setTab] = useState(0);
+
   return (
     <div className="flex p-16">
       <div className="flex flex-col pr-16 w-3/5">
@@ -50,14 +56,21 @@ export default function page({ params }: { params: { id: number } }) {
             <ProgressBar percent={20} />
             <p>10% of donation pool</p>
             <hr className="my-6 border-gray-400 sm:mx-auto lg:my-8" />
-            <p className="mb-2">Enter donation amount</p>
+            <p>Select chain:</p>
+            <ChainSelector
+              labels={chains}
+              activeTab={tab}
+              setActiveTab={setTab}
+            />
+            <p className="mb-2">Enter donation amount:</p>
             <Input
-              className={"w-full mb-4"}
+              className="w-full mb-4"
               placeholder="eg. 1000 USDC"
               onChange={(c) => {
                 console.log(`${c}`);
               }}
             ></Input>
+
             <Button className={"w-full"} title="Donate" isRounded={true} />
           </div>
         </div>

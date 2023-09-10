@@ -1,7 +1,7 @@
 "use client";
 
 import StrategyCard from "@/components/StrategyCard";
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import { StrategyViewModel, strategyDummyData } from "@/constants/ViewModels";
 
 export default function Page() {
