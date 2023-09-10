@@ -16,13 +16,15 @@ export default function Input({
     onChange(e.target.value);
   };
   return (
-    <div className="flex w-full justify-center items-center">
+    <div className="flex flex-col items-end">
       <input
         className={`border-2 border-gray h-12 rounded-md p-4 text-xl ${className}`}
         placeholder={placeholder}
         onChange={handleChange}
       />
-      {unit && <span className="-ml-10 font-display text-2xl">{unit}</span>}
+      {unit && (
+        <span className="font-display text-2xl mr-4 -mt-10 ">{unit}</span>
+      )}
     </div>
   );
 }
