@@ -13,7 +13,7 @@ export default function ChainSelector({
   setActiveTab: (tab: number) => void;
 }) {
   const activeStyle =
-    "bg-red h-full rounded-full flex items-center cursor-pointer w-1/3 justify-center text-white";
+    "bg-red h-9 rounded-full flex items-center cursor-pointer w-1/3 justify-center text-white";
   const inactiveStyle =
     "h-full rounded-full flex items-center cursor-pointer w-1/3 justify-center text-red-light-medium";
   return (
