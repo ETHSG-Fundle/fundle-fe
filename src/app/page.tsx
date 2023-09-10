@@ -30,8 +30,8 @@ export default function Home() {
           <br />
           Want to donate for free?
           <br />
-          With Fundle, we take your capital and earn yield on it, donating it
-          quadratically to the community's favourite beneficiaries!
+          {`With Fundle, we take your capital and earn yield on it, donating it
+          quadratically to the community's favourite beneficiaries!`}
         </p>
         <div className="flex gap-2">
           <Button onClick={goToFund} title="Fund!" />

@@ -12,11 +12,11 @@ export default function Tabs({
   setActiveTab: (tab: number) => void;
 }) {
   const activeStyle =
-    "bg-red h-full rounded-full p-4 px-8 flex items-center cursor-pointer";
+    "bg-red h-full rounded-full p-4 px-8 flex items-center cursor-pointer w-1/2 justify-center";
   const inactiveStyle =
-    "h-full rounded-full p-4 px-8 flex items-center cursor-pointer -m-2";
+    "h-full rounded-full p-4 px-8 flex items-center cursor-pointer -m-2 w-1/2 justify-center";
   return (
-    <div className="flex justify-center items-center bg-gray rounded-full h-10 text-sm text-white mt-2">
+    <div className="flex justify-center items-center bg-gray rounded-full h-12 text-sm text-white mt-2 py-2">
       <div
         className={activeTab === 0 ? activeStyle : inactiveStyle}
         onClick={() => setActiveTab(0)}

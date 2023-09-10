@@ -4,34 +4,28 @@ import coin from "../assets/coin.png";
 import Tabs from "./Tabs";
 import Input from "./Input";
 import Button from "./Button";
-import { act } from "react-dom/test-utils";
+import { StrategyViewModel } from "@/constants/ViewModels";
 
 export default function StrategyCard({
-  title,
-  description,
-  bigStat,
-  stat1,
-  stat2,
+  viewModel,
+  inputValue,
   activeTab,
   setActiveTab,
-  balance,
+  setInputValue,
 }: {
-  title: string;
-  description: string;
-  bigStat: string;
-  stat1: string;
-  stat2: string;
+  viewModel: StrategyViewModel;
+  inputValue: string;
   activeTab: number;
   setActiveTab: (tab: number) => void;
-  balance: number;
+  setInputValue: (value: string) => void;
 }) {
   return (
-    <div className="flex flex-col justify-center w-1/4 bg-red-light rounded-md p-8">
-      <div className="flex items-end justify-center w-full text-2xl">
-        <Image src={coin} width={60} height={60} alt="icon" className="-mb-1" />
-        {title}
+    <div className="flex flex-col justify-center w-3/4 bg-red-light rounded-md p-8">
+      <div className="flex items-end justify-center w-full text-3xl">
+        <Image src={coin} width={60} height={60} alt="icon" className="-mb-2 mr-2" />
+        {viewModel.name}
         <div className="grow" />
-        <div className="font-display text-6xl">{bigStat}</div>
+        <div className="font-display text-6xl">{viewModel.yieldPercentage}%</div>
       </div>
       <Tabs
         label1="Deposit"
@@ -39,14 +33,14 @@ export default function StrategyCard({
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      <div className="font-display text-xl mt-4">Your Balance: {balance}</div>
+      <div className="font-display text-xl mt-4">Your Balance: {viewModel.balance}</div>
       <div className="font-display text-xl mt-2">Yield Generated: </div>
-      <div>Your Yield: {stat1}</div>
-      <div>Total Yield: {stat2}</div>
+      <div>Your Yield: {viewModel.userYield}</div>
+      <div>Total Yield: {viewModel.totalYield}</div>
 
-      <div className="mb-6">{description}</div>
+      <div className="mb-6">{viewModel.description}</div>
 
-      <Input unit="DAI" className="w-full -ml-3" />
+      <Input unit="DAI" className="w-full -ml-3" onChange={setInputValue} />
 
       <Button
         className="mt-4"
