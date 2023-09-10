@@ -46,17 +46,18 @@ export default function NavBar() {
   useEffect(() => {
     // If the wallet has a provider than the wallet is connected
     if (wallet?.provider) {
-      // setProvider(new ethers.providers.Web3Provider(wallet.provider, "any"));
       // if using ethers v6 this is:
       setProvider(new ethers.BrowserProvider(wallet.provider, "any"));
-      // localStorage.setItem("isWalletConnected", "true");
-    } else {
-      // localStorage.setItem("isWalletConnected", "false");
     }
   }, [wallet]);
 
   const connectButtonHandler = () => {
-    connect();
+    if (wallet) {
+      disconnect(wallet);
+      setAccount(null);
+    } else {
+      connect();
+    }
   };
 
   return (
@@ -77,7 +78,7 @@ export default function NavBar() {
       <div className="grow"></div>
       <Button
         className="w-48 text-ellipsis overflow-hidden	"
-        title={account ? account.address : "Connect Wallet"}
+        title={wallet && account ? account.address : "Connect Wallet"}
         onClick={connectButtonHandler}
         isLoading={connecting}
       />
