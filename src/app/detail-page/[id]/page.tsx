@@ -266,7 +266,7 @@ export default function Page({ params }: { params: { id: number } }) {
         const value = ethers.parseEther("5");
         const donationTx = await lineaRelayerContract?.executeMainDonation(
           "ethereum-2",
-          addresses.donationManager,
+          addresses.goerliReceiverContract,
           params.id,
           donationAmount,
           1, // Donation type -- donate direct to beneficiary
@@ -296,7 +296,7 @@ export default function Page({ params }: { params: { id: number } }) {
         const value = ethers.parseEther("0.03");
         const donationTx = await lineaRelayerContract?.executeMainDonation(
           "ethereum-2",
-          addresses.donationManager,
+          addresses.goerliReceiverContract,
           params.id,
           donationAmount,
           1, // Donation type -- donate direct to beneficiary
