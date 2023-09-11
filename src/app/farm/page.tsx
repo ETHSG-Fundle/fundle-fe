@@ -108,10 +108,11 @@ export default function Page() {
         parseFloat(inputValue1) * Math.pow(10, 18)
       );
       try {
-        await sdaiStrategyContract?.withdraw(
+        const tx = await sdaiStrategyContract?.withdraw(
           addresses.daiContract,
           depositAmountNumber
         );
+        await tx.wait()
         setIsLoading([false, false]);
       } catch (e) {
         setIsLoading([false, false]);
@@ -127,7 +128,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="mt-8">Farm</h1>
+      <h1 className="mt-8">Farm 🌱</h1>
       {`Want to donate without spending a single cent? Simply park your funds with us, and we'll do the rest!`}
       <div className="grid grid-cols-2 w-5/6 px-16 mt-4 place-items-start">
         {strategyDummyData.map((strategy: StrategyViewModel) => (

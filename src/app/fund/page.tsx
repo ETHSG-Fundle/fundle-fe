@@ -10,7 +10,7 @@ import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import { ethers } from "ethers";
 import { addresses } from "@/constants/addresses";
 import donationManagerAbi from "../../ABIs/BeneficiaryDonationManager.abi.json";
-import { toUSDString } from "../utils/web3utils";
+import { reduceDecimals, toUSDString } from "../utils/web3utils";
 import chestImage from "../../../public/chest.png";
 import Image from "next/image";
 import type { Chain } from "@web3-onboard/common/dist/types";
@@ -45,7 +45,7 @@ export default function Page() {
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>();
   const [chainList, setChainList] = useState<Chain[]>();
 
-  const [totalDonations, setTotalDonations] = useState<BigInt>(BigInt(0));
+  const [totalDonations, setTotalDonations] = useState<number>(0);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -159,8 +159,9 @@ export default function Page() {
         totalDonationsAmountForMainPoolPromise,
         totalDonationsAmountForBeneficiariesPromise,
       ]);
-      const totalDonationsAmount =
+      const rawTotalDonationsAmount =
         totalDonationsAmountForMainPool + totalDonationsAmountForBeneficiaries;
+      const totalDonationsAmount = reduceDecimals(rawTotalDonationsAmount, 6);
       setTotalDonations(totalDonationsAmount);
     };
     getTotalDonationsAmount();
@@ -284,7 +285,7 @@ export default function Page() {
   const banner = (
     <div className="flex bg-red-light p-8 rounded-md justify-between">
       <div className="flex flex-col">
-        <h1>Total Donations: ${toUSDString(totalDonations)}</h1>
+        <h1>Total Donations: ${totalDonations?.toFixed()}</h1>
         <p>
           Not sure who to donate to? Donate directly to the pool and let the
           community decide where your funds go!
@@ -326,7 +327,7 @@ export default function Page() {
     <div className="">
       <section className="">{banner}</section>
       <section className="ml-8 mt-4 mb-8">
-        <h1>Accredited Projects </h1>
+        <h1>Fund Accredited Projects 💎</h1>
         <p>Donate to your favourite causes!</p>
       </section>
       <Gallery />

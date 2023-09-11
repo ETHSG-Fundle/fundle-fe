@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ProgressBar({ percent }: { percent: number }) {
+export default function ProgressBar({ percent }: { percent: string }) {
   return (
     <div className="w-full bg-red-medium rounded-full h-6">
       <div
