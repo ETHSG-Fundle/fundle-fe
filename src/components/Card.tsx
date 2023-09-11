@@ -21,7 +21,7 @@ export default function Card({
       onClick={onClickHandler}
     >
       <div className="flex items-center w-full text-xl">
-        <div>{viewModel.name}</div>
+        <div className="font-bold">{viewModel.name}</div>
         <div className="grow" />
         <div>❤️</div>
       </div>

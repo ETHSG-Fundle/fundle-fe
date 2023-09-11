@@ -14,6 +14,8 @@ export default function StrategyCard({
   setInputValue,
   userBalance,
   depositHandler,
+  depositedBalance,
+  isLoading,
 }: {
   viewModel: StrategyViewModel;
   inputValue: string;
@@ -22,6 +24,8 @@ export default function StrategyCard({
   setInputValue: (value: string) => void;
   userBalance: string;
   depositHandler: () => void;
+  depositedBalance: string;
+  isLoading: boolean;
 }) {
   return (
     <div className="flex flex-col justify-center w-full p-8">
@@ -35,9 +39,11 @@ export default function StrategyCard({
             alt="icon"
             className="-ml-2 mr-4"
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col font-display">
             {viewModel.name}
-            <p className="text-sm italic text-white">Ethereum Mainnet</p>
+            <p className="text-sm italic text-white font-body">
+              Ethereum Mainnet
+            </p>
           </div>
           <div className="grow" />
           <div className="flex flex-col items-end">
@@ -56,7 +62,9 @@ export default function StrategyCard({
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
-        <div className="font-display text-xl mt-4">About {viewModel.name}: </div>
+        <div className="font-display text-xl mt-4">
+          About {viewModel.name}:{" "}
+        </div>
         <div className="flex">{viewModel.description}</div>
         <div className="font-display text-xl mt-4">Yield Generated:</div>
         <div className="flex">
@@ -70,15 +78,28 @@ export default function StrategyCard({
           {viewModel.totalYield} {viewModel.currency}
         </div>
         <div className="font-display text-xl mt-4">
-          Your Balance: {userBalance} {viewModel.currency}
+          {activeTab === 0 ? (
+            <div>
+              Your Balance: {userBalance} {viewModel.currency}
+            </div>
+          ) : (
+            <div>
+              Deposited Balance: {depositedBalance} {viewModel.currency}
+            </div>
+          )}
         </div>
-        <Input unit={viewModel.currency} className="w-full -ml-3" onChange={setInputValue} />
+        <Input
+          unit={viewModel.currency}
+          className="w-full -ml-3"
+          onChange={setInputValue}
+        />
 
         <Button
           className="my-4 w-full"
           isRounded={true}
           title={activeTab === 0 ? "Deposit" : "Withdraw"}
           onClick={depositHandler}
+          isLoading={isLoading}
         />
       </div>
     </div>

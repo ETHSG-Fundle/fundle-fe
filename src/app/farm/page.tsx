@@ -28,9 +28,16 @@ export default function Page() {
     setPrimaryWallet, // function that can set the primary wallet and/or primary account within that wallet. The wallet that is set needs to be passed in for the first parameter and if you would like to set the primary account, the address of that account also needs to be passed in
   ] = useConnectWallet();
 
-  const [sdaiContract, setSdaiContract] = useState<Contract>();
+  const [sdaiStrategyContract, setSdaiStrategyContract] = useState<Contract>();
   const [daiContract, setDaiContract] = useState<Contract>();
-  const [sdaiBalance, setSdaiBalance] = useState<BigInt>(BigInt(0));
+  const [daiBalance, setDaiBalance] = useState<BigInt>(BigInt(0));
+  const [balances, setBalances] = useState<BigInt[]>([BigInt(0), BigInt(0)]);
+  const [depositedBalances, setDepositedBalances] = useState<BigInt[]>([
+    BigInt(0),
+    BigInt(0),
+  ]);
+  const [isLoading, setIsLoading] = useState<boolean[]>([false, false]);
+  // const [sdaiBalance, setSdaiBalance] = useState<BigInt>(BigInt(0));
 
   useEffect(() => {
     // If the wallet has a provider than the wallet is connected
@@ -41,45 +48,86 @@ export default function Page() {
         let provider = new ethers.BrowserProvider(wallet.provider, "any");
         let signer = await provider.getSigner();
 
-        const internalSdaiContract = new Contract(
-          addresses.sdaiContract,
+        const internalSdaiStrategyContract = new Contract(
+          addresses.sdaiStrategyContract,
           ERC4626Abi.abi,
           signer
         );
-        setSdaiContract(internalSdaiContract);
+        setSdaiStrategyContract(internalSdaiStrategyContract);
 
         const internalDaiContract = new Contract(
-          addresses.daiContract,
+          addresses.clonedDaiContract,
           ERC20Abi,
           signer
         );
         setDaiContract(internalDaiContract);
 
-        const internalSdaiBalance = await internalSdaiContract.balanceOf(
+        const internalSdaiBalance =
+          await internalSdaiStrategyContract.balanceOf(
+            wallet.accounts[0].address
+          );
+        setDepositedBalances([internalSdaiBalance, BigInt(0)]);
+
+        const internalDaiBalance = await internalDaiContract.balanceOf(
           wallet.accounts[0].address
         );
-        setSdaiBalance(internalSdaiBalance);
+        setBalances([internalDaiBalance, BigInt(0)]);
       }
     };
 
     getSdaiBalance();
   }, [wallet]);
 
-  const depositHandler = async () => {
-    const depositAmountNumber = Number(
-      parseFloat(inputValue1) * Math.pow(10, 18)
-    );
-    try {
-      await daiContract?.approve(addresses.sdaiContract, depositAmountNumber);
-      await sdaiContract?.deposit(addresses.daiContract, depositAmountNumber);
-    } catch (e) {}
+  const primaryActionHandler = async () => {
+    const deposit = async () => {
+      setIsLoading([true, false]);
+      const depositAmountNumber = String(
+        parseFloat(inputValue1) * Math.pow(10, 18)
+      );
+      try {
+        const tx = await daiContract?.approve(
+          addresses.sdaiStrategyContract,
+          depositAmountNumber
+        );
+
+        await tx.wait();
+
+        await sdaiStrategyContract?.deposit(
+          addresses.daiContract,
+          depositAmountNumber
+        );
+        setIsLoading([false, false]);
+      } catch (e) {
+        setIsLoading([false, false]);
+      }
+    };
+
+    const withdraw = async () => {
+      setIsLoading([true, false]);
+      const depositAmountNumber = String(
+        parseFloat(inputValue1) * Math.pow(10, 18)
+      );
+      try {
+        await sdaiStrategyContract?.withdraw(
+          addresses.daiContract,
+          depositAmountNumber
+        );
+        setIsLoading([false, false]);
+      } catch (e) {
+        setIsLoading([false, false]);
+      }
+    };
+
+    if (activeTab1 === 0) {
+      deposit();
+    } else if (activeTab1 === 1) {
+      withdraw();
+    }
   };
-
-
 
   return (
     <div className="flex flex-col items-center">
-      <h1>Farm</h1>
+      <h1 className="mt-8">Farm</h1>
       {`Want to donate without spending a single cent? Simply park your funds with us, and we'll do the rest!`}
       <div className="grid grid-cols-2 w-5/6 px-16 mt-4 place-items-start">
         {strategyDummyData.map((strategy: StrategyViewModel) => (
@@ -90,8 +138,10 @@ export default function Page() {
             setInputValue={strategy.id === 0 ? setInputValue1 : setInputValue2}
             activeTab={strategy.id === 0 ? activeTab1 : activeTab2}
             setActiveTab={strategy.id === 0 ? setActiveTab1 : setActiveTab2}
-            userBalance={toUSDString(sdaiBalance, Math.pow(10, 18))}
-            depositHandler={depositHandler}
+            userBalance={toUSDString(balances[strategy.id], 18)}
+            depositedBalance={toUSDString(depositedBalances[strategy.id], 18)}
+            depositHandler={primaryActionHandler}
+            isLoading={isLoading[strategy.id]}
           />
         ))}
       </div>
