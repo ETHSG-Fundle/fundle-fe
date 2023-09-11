@@ -170,15 +170,16 @@ export default function Page({ params }: { params: { id: number } }) {
             />
             <p className="mb-2">Enter donation amount:</p>
             <Input
-              className="w-full mb-4"
+              className="w-full"
               placeholder="eg. 1000 USDC"
               onChange={(value) => {
                 setInputValue(value);
               }}
+              unit="USDC"
             ></Input>
 
             <Button
-              className={"w-full"}
+              className="w-full mt-6"
               title="Donate"
               isRounded={true}
               onClick={donationHandler}

@@ -27,7 +27,7 @@ export default function Page() {
   ] = useConnectWallet();
 
   // Values
-  const [usdcBalance, setUsdcBalance] = useState<string | undefined>("test");
+  const [usdcBalance, setUsdcBalance] = useState<string | undefined>("0");
   const [inputValue, setInputValue] = useState<string>("");
   const [totalDonations, setTotalDonations] = useState<BigInt>(BigInt(0));
 
@@ -129,11 +129,11 @@ export default function Page() {
         <Input
           className="w-96"
           placeholder="eg. 1000 USDC"
-          unit="usdcsss"
+          unit="USDC"
           onChange={(value) => {
             setInputValue(value);
           }}
-        ></Input>
+        />
         <Button title="Donate" onClick={depositHandler} />
       </div>
     </div>
