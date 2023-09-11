@@ -38,6 +38,11 @@ export default function Page({ params }: { params: { id: number } }) {
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>();
   const [chainList, setChainList] = useState<Chain[]>();
 
+  const [donationsReceived, setDonationsReceived] = useState<number>();
+  const [totalDonationsReceived, setTotalDonationsReceived] =
+    useState<number>();
+  const [quadraticScore, setQuadraticScore] = useState<number>();
+
   const [
     {
       wallet, // the wallet that has been connected or null if not yet connected
@@ -107,13 +112,31 @@ export default function Page({ params }: { params: { id: number } }) {
     }
   }, [chains]);
 
-
   useEffect(() => {
     const getDonationAmount = async () => {
-
-    }
-    getDonationAmount()
-  }, [])
+      if (donationManagerContract) {
+        const epochIndex = 0;
+        const beneficiaryIndex = params.id;
+        const donationsReceivedInEpoch =
+          await donationManagerContract.getEpochBeneficiaryDonation(
+            epochIndex,
+            beneficiaryIndex
+          );
+        setDonationsReceived(donationsReceivedInEpoch);
+        const totalDonationsReceivedInEpoch =
+          await donationManagerContract.getTotalEpochDonation(epochIndex);
+        setTotalDonationsReceived(totalDonationsReceivedInEpoch);
+        const quadScoreList =
+          await donationManagerContract.getEpochDonationDistribution(
+            epochIndex
+          );
+        console.log("quadScore: ", quadScoreList);
+        const quadScore = quadScoreList[0][params.id] / 10000;
+        setQuadraticScore(quadScore);
+      }
+    };
+    getDonationAmount();
+  }, [donationManagerContract]);
 
   // Actions
   const donationHandler = async () => {
@@ -201,10 +224,16 @@ export default function Page({ params }: { params: { id: number } }) {
           </div>
           <div className="bg-red-light rounded-bl-3xl rounded-br-3xl px-8 pb-8">
             <h1>{viewModel.name}</h1>
-            <h1 className="font-body text-4xl font-medium">$78,374</h1>
+            <h1 className="font-body text-4xl font-medium">
+              ${donationsReceived}
+            </h1>
             <p className="mb-4">raised from 325 donors</p>
             <ProgressBar percent={20} />
-            <p>10% of donation pool</p>
+            <p>
+              {donationsReceived || 0 / (totalDonationsReceived || 1)}% of
+              donations went to {viewModel.name}, earning them {quadraticScore}{" "}
+              of the yield generated from our farm
+            </p>
             <hr className="my-6 border-gray-400 sm:mx-auto lg:my-8" />
             <p>Select chain:</p>
             <ChainSelector

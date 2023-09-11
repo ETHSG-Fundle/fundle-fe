@@ -2,6 +2,7 @@ import { StaticImageData } from "next/image";
 import wwfImage from "public/placeholder-wwf.jpg";
 import unicefImage from "public/unicef.png";
 import foodbankImage from "public/foodbank.png";
+import sdaiImage from "public/sdai.png";
 
 export interface BeneficiaryViewModel {
   id: number;
@@ -14,7 +15,7 @@ export interface StrategyViewModel {
   id: number;
   name: string;
   currency: string;
-  image: StaticImageData;
+  image: StaticImageData | string;
   yieldPercentage: number;
   balance: number;
   userYield: number;
@@ -50,7 +51,7 @@ export const strategyDummyData: StrategyViewModel[] = [
     id: 0,
     name: "sDai",
     currency: "DAI",
-    image: wwfImage,
+    image: sdaiImage,
     yieldPercentage: 0.5,
     balance: 100,
     userYield: 0.5,
@@ -59,9 +60,10 @@ export const strategyDummyData: StrategyViewModel[] = [
   },
   {
     id: 1,
-    name: "pendle?",
+    name: "fUSDC - Pendle YT",
     currency: "PENDLE",
-    image: wwfImage,
+    image:
+      "https://storage.googleapis.com/stage-pendle-bucket-a/images/uploads/1dfb3910-475d-4f22-9180-22a9c6e54674.svg",
     yieldPercentage: 0.5,
     balance: 100,
     userYield: 0.5,
