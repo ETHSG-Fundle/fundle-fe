@@ -293,7 +293,7 @@ export default function Page({ params }: { params: { id: number } }) {
       }
 
       try {
-        const value = ethers.parseEther("0.1");
+        const value = ethers.parseEther("0.03");
         const donationTx = await lineaRelayerContract?.executeMainDonation(
           "ethereum-2",
           addresses.donationManager,
