@@ -96,7 +96,6 @@ export default function Page() {
 
     const createContracts = async () => {
       if (wallet?.provider) {
-        await setChain({ chainId: "0x5" });
         // if using ethers v6 this is:
         let provider = new ethers.BrowserProvider(wallet.provider, "any");
         let signer = await provider.getSigner();
