@@ -37,7 +37,7 @@ export default function Page({ params }: { params: { id: number } }) {
   const [donationsReceived, setDonationsReceived] = useState<number>();
   const [totalDonationsReceived, setTotalDonationsReceived] =
     useState<number>();
-  const [percentageDonations, setPercentageDonations] = useState<number>();
+  const [percentageDonations, setPercentageDonations] = useState<string>("");
   const [quadraticScore, setQuadraticScore] = useState<number>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -47,6 +47,8 @@ export default function Page({ params }: { params: { id: number } }) {
   const [lineaRelayerContract, setLineaRelayerContract] = useState<Contract>();
   const [usdcContract, setUsdcContract] = useState<Contract>();
   const [donationManagerContract, setDonationManagerContract] =
+    useState<Contract>();
+  const [readOnlyDonationManagerContract, setReadOnlyDonationManagerContract] =
     useState<Contract>();
 
   const [
@@ -70,11 +72,80 @@ export default function Page({ params }: { params: { id: number } }) {
     setChain, // function to call to initiate user to switch chains in their wallet
   ] = useSetChain();
 
+  // useEffect(() => {
+  //   const createAndReadContracts = async () => {
+  //     let readonlyProvider = new ethers.JsonRpcProvider(
+  //       `https://public.blockchainnodeengine.app/eth_goerli?apikey=GCPWEB3_ETHSG`
+  //     );
+  //     const internalReadOnlyDonationContract = new Contract(
+  //       addresses.donationManager,
+  //       DonationManagerAbi.abi,
+  //       readonlyProvider
+  //     );
+  //     setReadOnlyDonationManagerContract(internalReadOnlyDonationContract);
+  //     if (readOnlyDonationManagerContract) {
+  //       const epochIndex = 0;
+  //       const beneficiaryIndex = params.id;
+  //       const donationsReceivedInEpochPromise =
+  //         readOnlyDonationManagerContract.getEpochBeneficiaryDonation(
+  //           epochIndex,
+  //           beneficiaryIndex
+  //         );
+  //       const totalDonationsReceivedInEpochPromise =
+  //         readOnlyDonationManagerContract.getTotalEpochDonation(epochIndex);
+  //       const epochDonationDistributionPromise =
+  //         readOnlyDonationManagerContract.getEpochDonationDistribution(
+  //           epochIndex
+  //         );
+
+  //       const [
+  //         rawDonationsReceivedInEpoch,
+  //         rawTotalDonationsReceivedInEpoch,
+  //         epochDonationDistribution,
+  //       ] = await Promise.all([
+  //         donationsReceivedInEpochPromise,
+  //         totalDonationsReceivedInEpochPromise,
+  //         epochDonationDistributionPromise,
+  //       ]);
+
+  //       const donationsReceivedInEpoch = reduceDecimals(
+  //         rawDonationsReceivedInEpoch,
+  //         6
+  //       );
+  //       setDonationsReceived(donationsReceivedInEpoch);
+  //       const totalDonationsReceivedInEpoch = reduceDecimals(
+  //         rawTotalDonationsReceivedInEpoch,
+  //         6
+  //       );
+  //       setTotalDonationsReceived(totalDonationsReceivedInEpoch);
+  //       const internalPercentageDonations =
+  //         (100 * (donationsReceivedInEpoch || 0)) /
+  //         (totalDonationsReceivedInEpoch || 1);
+  //       setPercentageDonations(internalPercentageDonations.toFixed(2));
+
+  //       const { 0: _, 1: quadScoreArray } = epochDonationDistribution;
+  //       const rawQuadraticScore = quadScoreArray[params.id];
+  //       const internalQuadraticScore = reduceDecimals(rawQuadraticScore, 2);
+  //       setQuadraticScore(internalQuadraticScore);
+  //     }
+  //   };
+  //   createAndReadContracts()
+  // }, [readOnlyDonationManagerContract]);
+
   useEffect(() => {
     const createContracts = async () => {
       if (wallet?.provider) {
         let provider = new ethers.BrowserProvider(wallet.provider, "any");
+        let readonlyProvider = new ethers.JsonRpcProvider(
+          `https://public.blockchainnodeengine.app/eth_goerli?apikey=GCPWEB3_ETHSG`
+        );
         let signer = await provider.getSigner();
+        const internalReadOnlyDonationContract = new Contract(
+          addresses.donationManager,
+          DonationManagerAbi.abi,
+          readonlyProvider
+        );
+        setReadOnlyDonationManagerContract(internalReadOnlyDonationContract);
 
         const internalMantleDonationRelayerContract = new Contract(
           addresses.mantleRelayerContract,
@@ -126,18 +197,20 @@ export default function Page({ params }: { params: { id: number } }) {
 
   useEffect(() => {
     const getDonationAmount = async () => {
-      if (donationManagerContract) {
+      if (readOnlyDonationManagerContract) {
         const epochIndex = 0;
         const beneficiaryIndex = params.id;
         const donationsReceivedInEpochPromise =
-          donationManagerContract.getEpochBeneficiaryDonation(
+          readOnlyDonationManagerContract.getEpochBeneficiaryDonation(
             epochIndex,
             beneficiaryIndex
           );
         const totalDonationsReceivedInEpochPromise =
-          donationManagerContract.getTotalEpochDonation(epochIndex);
+          readOnlyDonationManagerContract.getTotalEpochDonation(epochIndex);
         const epochDonationDistributionPromise =
-          donationManagerContract.getEpochDonationDistribution(epochIndex);
+          readOnlyDonationManagerContract.getEpochDonationDistribution(
+            epochIndex
+          );
 
         const [
           rawDonationsReceivedInEpoch,
@@ -162,7 +235,7 @@ export default function Page({ params }: { params: { id: number } }) {
         const internalPercentageDonations =
           (100 * (donationsReceivedInEpoch || 0)) /
           (totalDonationsReceivedInEpoch || 1);
-        setPercentageDonations(internalPercentageDonations);
+        setPercentageDonations(internalPercentageDonations.toFixed(2));
 
         const { 0: _, 1: quadScoreArray } = epochDonationDistribution;
         const rawQuadraticScore = quadScoreArray[params.id];
@@ -171,7 +244,7 @@ export default function Page({ params }: { params: { id: number } }) {
       }
     };
     getDonationAmount();
-  }, [donationManagerContract]);
+  }, [readOnlyDonationManagerContract, params.id]);
 
   // Actions
   const donationHandler = async () => {
@@ -319,9 +392,10 @@ export default function Page({ params }: { params: { id: number } }) {
             <p className="mb-4">raised from 325 donors</p>
             <ProgressBar percent={percentageDonations ?? 0} />
             <p>
-              {percentageDonations}% of donations went to {viewModel.name},
-              earning them {quadraticScore?.toFixed(0)}% of the yield generated
-              from our farm
+              <span className="font-bold">{percentageDonations}%</span> of
+              donations went to {viewModel.name}, earning them{" "}
+              <span className="font-bold">{quadraticScore?.toFixed(0)}% </span>
+              of the yield generated from our farm.
             </p>
             <hr className="my-6 border-gray-400 sm:mx-auto lg:my-8" />
             <p>Select chain:</p>
