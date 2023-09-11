@@ -16,7 +16,6 @@ import ERC20Abi from "../../../ABIs/erc20.abi.json";
 import DonationManagerAbi from "../../../ABIs/BeneficiaryDonationManager.abi.json";
 
 import { addresses } from "@/constants/addresses";
-import type { ConnectedChain } from "@web3-onboard/core/dist/types";
 import type { Chain } from "@web3-onboard/common/dist/types";
 
 export default function Page({ params }: { params: { id: number } }) {
@@ -27,8 +26,6 @@ export default function Page({ params }: { params: { id: number } }) {
     { name: "Mantle", image: MANTLE },
     { name: "Linea", image: LINEA },
   ];
-
-  const [tab, setTab] = useState(0);
 
   const [mantleRelayerContract, setMantleRelayerContract] =
     useState<Contract>();
@@ -96,13 +93,6 @@ export default function Page({ params }: { params: { id: number } }) {
 
   useEffect(() => {
     if (connectedChain) {
-      console.log("connectedChainId", connectedChain.id);
-      console.log(
-        "find index",
-        chainList?.findIndex((chain) => {
-          return chain.id == connectedChain.id;
-        })
-      );
       setSelectedChainIndex(
         chainList?.findIndex((chain) => {
           return chain.id == connectedChain.id;
@@ -117,29 +107,13 @@ export default function Page({ params }: { params: { id: number } }) {
     }
   }, [chains]);
 
-  // useEffect(() => {
-  //   if (connectedChain) {
-  //     console.log(
-  //       chains.findIndex((chain) => {
-  //         chain.id == connectedChain.id;
-  //       })
-  //     );
-  //     setTab(
-  //       chains.findIndex((chain) => {
-  //         chain.id == connectedChain.id;
-  //       })
-  //     );
-  //   }
-  // }, [connectedChain]);
 
-  // useEffect(() => {
-  //   if (wallet) {
-  //     if (connectedChain?.id === chains[tab].id) {
-  //     } else {
-  //       setChain({ chainId: chains[tab].id });
-  //     }
-  //   }
-  // }, [wallet, tab]);
+  useEffect(() => {
+    const getDonationAmount = async () => {
+
+    }
+    getDonationAmount()
+  }, [])
 
   // Actions
   const donationHandler = async () => {
@@ -173,11 +147,11 @@ export default function Page({ params }: { params: { id: number } }) {
       );
     };
 
-    if (tab === 0) {
+    if (selectedChainIndex === 0) {
       donateUsingEthereum();
-    } else if (tab === 1) {
+    } else if (selectedChainIndex === 1) {
       donateUsingMantle();
-    } else if (tab === 2) {
+    } else if (selectedChainIndex === 2) {
       donateUsingLinea();
     }
 
@@ -189,11 +163,6 @@ export default function Page({ params }: { params: { id: number } }) {
       setChain({ chainId: chainList[tabId].id });
     }
   };
-
-  useEffect(() => {
-    console.log("connectedChain", connectedChain);
-    console.log("chains", chains);
-  }, [connectedChain, chains]);
 
   return (
     <div className="flex p-16">
