@@ -37,7 +37,7 @@ export default function StrategyCard({
           />
           <div className="flex flex-col">
             {viewModel.name}
-            <p className="mt-2 text-sm italic text-white">Ethereum Mainnet</p>
+            <p className="text-sm italic text-white">Ethereum Mainnet</p>
           </div>
           <div className="grow" />
           <div className="flex flex-col items-end">

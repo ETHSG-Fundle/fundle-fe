@@ -61,7 +61,7 @@ export default function NavBar() {
   };
 
   return (
-    <div className="flex w-screen bg-red-light text-black py-4 px-12 items-center sticky top-0 z-10">
+    <div className="flex w-screen bg-red-light text-black py-4 px-12 items-center top-0 z-10">
       <Link href="/" className="m-2">
         <Image src={Icon} width={50} height={50} alt="icon" />
       </Link>
