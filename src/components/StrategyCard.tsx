@@ -72,7 +72,7 @@ export default function StrategyCard({
         <div className="font-display text-xl mt-4">
           Your Balance: {userBalance} {viewModel.currency}
         </div>
-        <Input unit="DAI" className="w-full -ml-3" onChange={setInputValue} />
+        <Input unit={viewModel.currency} className="w-full -ml-3" onChange={setInputValue} />
 
         <Button
           className="my-4 w-full"

@@ -163,7 +163,7 @@ export default function Page() {
   return (
     <div className="">
       <section className="">{banner}</section>
-      <section className="ml-8">
+      <section className="ml-8 mt-4 mb-8">
         <h1>Accredited Projects </h1>
         <p>Donate to your favourite causes!</p>
       </section>

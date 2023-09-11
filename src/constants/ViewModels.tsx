@@ -56,12 +56,12 @@ export const strategyDummyData: StrategyViewModel[] = [
     balance: 100,
     userYield: 0.5,
     totalYield: 5,
-    description: "sDAI, or SavingsDAI is a yield generating strategy for DAI.",
+    description: "sDAI is a yield generating strategy for DAI.",
   },
   {
     id: 1,
     name: "fUSDC - Pendle YT",
-    currency: "PENDLE",
+    currency: "USDC-YT",
     image:
       "https://storage.googleapis.com/stage-pendle-bucket-a/images/uploads/1dfb3910-475d-4f22-9180-22a9c6e54674.svg",
     yieldPercentage: 0.5,
