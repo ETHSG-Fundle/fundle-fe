@@ -319,9 +319,9 @@ export default function Page({ params }: { params: { id: number } }) {
             <p className="mb-4">raised from 325 donors</p>
             <ProgressBar percent={percentageDonations ?? 0} />
             <p>
-              {percentageDonations}% of donations went to {viewModel.name},
-              earning them {quadraticScore?.toFixed(0)}% of the yield generated
-              from our farm
+              {percentageDonations?.toFixed(0)}% of donations went to{" "}
+              {viewModel.name}, earning them {quadraticScore?.toFixed(0)}% of
+              the yield generated from our farm
             </p>
             <hr className="my-6 border-gray-400 sm:mx-auto lg:my-8" />
             <p>Select chain:</p>

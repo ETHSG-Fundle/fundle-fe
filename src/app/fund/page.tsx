@@ -6,13 +6,18 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { Contract } from "ethers";
 import erc20Abi from "../../ABIs/erc20.abi.json";
-import { useConnectWallet } from "@web3-onboard/react";
+import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import { ethers } from "ethers";
 import { addresses } from "@/constants/addresses";
 import donationManagerAbi from "../../ABIs/BeneficiaryDonationManager.abi.json";
 import { toUSDString } from "../utils/web3utils";
 import chestImage from "../../../public/chest.png";
 import Image from "next/image";
+import type { Chain } from "@web3-onboard/common/dist/types";
+import MiniSelector from "@/components/Miniselector";
+import ETH from "../../../public/eth.png";
+import LINEA from "../../../public/linea.png";
+import MANTLE from "../../../public/mantle.png";
 
 export default function Page() {
   // Hooks
@@ -28,42 +33,100 @@ export default function Page() {
     setPrimaryWallet, // function that can set the primary wallet and/or primary account within that wallet. The wallet that is set needs to be passed in for the first parameter and if you would like to set the primary account, the address of that account also needs to be passed in
   ] = useConnectWallet();
 
+  const chainViewModel = [
+    { name: "Ethereum", image: ETH },
+    { name: "Mantle", image: MANTLE },
+    { name: "Linea", image: LINEA },
+  ];
+
   // Values
   const [usdcBalance, setUsdcBalance] = useState<string | undefined>("0");
   const [inputValue, setInputValue] = useState<string>("");
+  const [selectedChainIndex, setSelectedChainIndex] = useState<number>();
+  const [chainList, setChainList] = useState<Chain[]>();
+
   const [totalDonations, setTotalDonations] = useState<BigInt>(BigInt(0));
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Contracts
   const [usdcContract, setUsdcContract] = useState<Contract>();
   const [donationManagerContract, setDonationManagerContract] =
     useState<Contract>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [mantleRelayerContract, setMantleRelayerContract] =
+    useState<Contract>();
+  const [lineaRelayerContract, setLineaRelayerContract] = useState<Contract>();
+
+  const [
+    {
+      chains, // the list of chains that web3-onboard was initialized with
+      connectedChain, // the current chain the user's wallet is connected to
+      settingChain, // boolean indicating if the chain is in the process of being set
+    },
+    setChain, // function to call to initiate user to switch chains in their wallet
+  ] = useSetChain();
 
   useEffect(() => {
-    // If the wallet has a provider than the wallet is connected
-
-    const getUSDCBalance = async () => {
+    const createContracts = async () => {
       if (wallet?.provider) {
         // if using ethers v6 this is:
         let provider = new ethers.BrowserProvider(wallet.provider, "any");
         let signer = await provider.getSigner();
 
+        const internalMantleRelayerContract = new Contract(
+          addresses.mantleRelayerContract,
+          donationManagerAbi.abi,
+          signer
+        );
+        setMantleRelayerContract(internalMantleRelayerContract);
+        const internalLineaRelayerContract = new Contract(
+          addresses.lineaRelayerContract,
+          donationManagerAbi.abi,
+          signer
+        );
+        setLineaRelayerContract(internalLineaRelayerContract);
+
         const internalUsdcContract = new Contract(
-          "0x254d06f33bDc5b8ee05b2ea472107E300226659A",
+          addresses.ausdcContract,
           erc20Abi,
           signer
         );
+        setUsdcContract(internalUsdcContract);
 
-        const donationManagerContract = new Contract(
+        const internalDonationManagerContract = new Contract(
           addresses.donationManager,
           donationManagerAbi.abi,
           signer
         );
+        setDonationManagerContract(internalDonationManagerContract);
+      }
+    };
 
-        setUsdcContract(internalUsdcContract);
-        setDonationManagerContract(donationManagerContract);
+    createContracts();
+  }, [wallet]);
 
-        const rawUsdcBalance = await internalUsdcContract.balanceOf(
+  useEffect(() => {
+    if (connectedChain) {
+      setSelectedChainIndex(
+        chainList?.findIndex((chain) => {
+          return chain.id == connectedChain.id;
+        })
+      );
+    }
+  }, [connectedChain, chainList]);
+
+  useEffect(() => {
+    if (chains) {
+      setChainList(chains);
+    }
+  }, [chains]);
+
+  useEffect(() => {
+    // If the wallet has a provider than the wallet is connected
+
+    const getUSDCBalance = async () => {
+      if (usdcContract && wallet) {
+        const rawUsdcBalance = await usdcContract.balanceOf(
           wallet.accounts[0].address
         );
         const retrievedUsdcBalance = toUSDString(rawUsdcBalance, 6);
@@ -73,7 +136,7 @@ export default function Page() {
     };
 
     getUSDCBalance();
-  }, [wallet]);
+  }, [usdcContract, wallet]);
 
   useEffect(() => {
     const getTotalDonationsAmount = async () => {
@@ -104,39 +167,117 @@ export default function Page() {
   }, [usdcContract, donationManagerContract]);
 
   const depositHandler = async () => {
-    setIsLoading(true);
-    const approveAmount = async () => {
-      if (usdcContract) {
-        try {
-          const tx = await usdcContract.approve(
-            addresses.donationManager,
-            Number(parseFloat(inputValue) * Math.pow(10, 6))
-          );
-          await tx.wait();
-          setIsLoading(false);
-        } catch (e) {
-          setIsLoading(false);
-        }
-      }
-    };
+    const donationAmount = Number(parseFloat(inputValue) * Math.pow(10, 6));
 
-    const donateAmount = async () => {
+    const depositUsingEthereum = async () => {
       setIsLoading(true);
-      if (donationManagerContract) {
-        try {
-          const tx = await donationManagerContract.depositForEpochDistribution(
-            Number(parseFloat(inputValue) * Math.pow(10, 6))
-          );
-          await tx.wait();
-          setIsLoading(false);
-        } catch (e) {
-          setIsLoading(false);
+      const approveAmount = async () => {
+        if (usdcContract) {
+          try {
+            const tx = await usdcContract.approve(
+              addresses.donationManager,
+              Number(parseFloat(inputValue) * Math.pow(10, 6))
+            );
+            await tx.wait();
+            setIsLoading(false);
+          } catch (e) {
+            setIsLoading(false);
+          }
         }
+      };
+
+      const donateAmount = async () => {
+        setIsLoading(true);
+        if (donationManagerContract) {
+          try {
+            const tx =
+              await donationManagerContract.depositForEpochDistribution(
+                Number(parseFloat(inputValue) * Math.pow(10, 6))
+              );
+            await tx.wait();
+            setIsLoading(false);
+          } catch (e) {
+            setIsLoading(false);
+          }
+        }
+      };
+      await approveAmount();
+      await donateAmount();
+    };
+
+    const depositUsingMantle = async () => {
+      setIsLoading(true);
+      try {
+        const approval = await usdcContract?.approve(
+          mantleRelayerContract,
+          donationAmount
+        );
+        await approval.wait();
+      } catch (e) {
+        setIsLoading(false);
+      }
+
+      try {
+        const value = ethers.parseEther("143");
+        const donationTx = await mantleRelayerContract?.executeMainDonation(
+          "ethereum-2",
+          addresses.donationManager,
+          0,
+          donationAmount,
+          2, // Donation type -- donate to quadratic pool
+          { value } // "pump it with a lot of gas" - rui yang :DDDDD
+        );
+        await donationTx.wait();
+        console.log("For Axelar:", donationTx.hash);
+        setIsLoading(false);
+      } catch (e) {
+        setIsLoading(false);
       }
     };
 
-    await approveAmount();
-    await donateAmount();
+    const depositUsingLinea = async () => {
+      setIsLoading(true);
+      try {
+        const approval = await usdcContract?.approve(
+          lineaRelayerContract,
+          donationAmount
+        );
+        await approval.wait();
+      } catch (e) {
+        setIsLoading(false);
+      }
+
+      try {
+        const value = ethers.parseEther("143");
+        const donationTx = await lineaRelayerContract?.executeMainDonation(
+          "ethereum-2",
+          addresses.donationManager,
+          0,
+          donationAmount,
+          2, // Donation type -- donate to quadratic pool
+          { value } // "pump it with a lot of gas" - rui yang :DDDDD
+        );
+        await donationTx.wait();
+        console.log("For Axelar:", donationTx.hash);
+        setIsLoading(false);
+      } catch (e) {
+        setIsLoading(false);
+      }
+    };
+
+    if (selectedChainIndex === 0) {
+      depositUsingEthereum();
+    } else if (selectedChainIndex === 1) {
+      depositUsingMantle();
+    } else if (selectedChainIndex === 2) {
+      depositUsingLinea();
+    }
+  };
+
+  const setActiveTabHandler = (tabId: number) => {
+    if (chainList) {
+      setChain({ chainId: chainList[tabId].id });
+    }
   };
 
   // JSX
@@ -148,7 +289,18 @@ export default function Page() {
           Not sure who to donate to? Donate directly to the pool and let the
           community decide where your funds go!
         </p>
-        <p>Your USDC balance: {usdcBalance}</p>
+        <p>Donate via any chain:</p>
+        <MiniSelector
+          labels={chainViewModel.map((chain) => chain.name)}
+          images={chainViewModel.map((chain) => chain.image)}
+          activeTab={selectedChainIndex || 0}
+          setActiveTab={setActiveTabHandler}
+          isLoading={settingChain}
+        />
+        <p>
+          Your USDC balance on {chainViewModel[selectedChainIndex || 0].name}:{" "}
+          {usdcBalance}
+        </p>
         <div className="mt-4 flex-col flex items-start gap-4">
           <Input
             className="w-96"
