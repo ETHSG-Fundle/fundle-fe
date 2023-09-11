@@ -74,15 +74,31 @@ export default function Page() {
 
   useEffect(() => {
     const getTotalDonationsAmount = async () => {
+      let totalDonationsAmountForMainPoolPromise,
+        totalDonationsAmountForBeneficiariesPromise;
       if (usdcContract) {
-        const totalDonationsAmount = await usdcContract.balanceOf(
+        totalDonationsAmountForMainPoolPromise = await usdcContract.balanceOf(
           addresses.donationManager
         );
-        setTotalDonations(totalDonationsAmount);
       }
+      if (donationManagerContract) {
+        totalDonationsAmountForBeneficiariesPromise =
+          await donationManagerContract.getTotalEpochDonation(0);
+      }
+
+      const [
+        totalDonationsAmountForMainPool,
+        totalDonationsAmountForBeneficiaries,
+      ] = await Promise.all([
+        totalDonationsAmountForMainPoolPromise,
+        totalDonationsAmountForBeneficiariesPromise,
+      ]);
+      const totalDonationsAmount =
+        totalDonationsAmountForMainPool + totalDonationsAmountForBeneficiaries;
+      setTotalDonations(totalDonationsAmount);
     };
     getTotalDonationsAmount();
-  }, [usdcContract]);
+  }, [usdcContract, donationManagerContract]);
 
   const depositHandler = async () => {
     const approveAmount = async () => {
