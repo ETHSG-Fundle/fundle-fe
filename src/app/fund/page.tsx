@@ -60,9 +60,10 @@ export default function Page() {
         setUsdcContract(internalUsdcContract);
         setDonationManagerContract(donationManagerContract);
 
-        const retrievedUsdcBalance = await internalUsdcContract.balanceOf(
+        const rawUsdcBalance = await internalUsdcContract.balanceOf(
           wallet.accounts[0].address
         );
+        const retrievedUsdcBalance = toUSDString(rawUsdcBalance, 6);
 
         setUsdcBalance(retrievedUsdcBalance.toString());
       }
