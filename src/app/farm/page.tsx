@@ -81,7 +81,7 @@ export default function Page() {
     <div className="flex flex-col items-center">
       <h1>Farm</h1>
       {`Want to donate without spending a single cent? Simply park your funds with us, and we'll do the rest!`}
-      <div className="grid grid-cols-2 w-2/3 mt-4 place-items-center">
+      <div className="grid grid-cols-2 w-5/6 px-16 mt-4 place-items-start">
         {strategyDummyData.map((strategy: StrategyViewModel) => (
           <StrategyCard
             key={strategy.id}

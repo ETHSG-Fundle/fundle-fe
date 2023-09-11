@@ -11,6 +11,8 @@ import { ethers } from "ethers";
 import { addresses } from "@/constants/addresses";
 import donationManagerAbi from "../../ABIs/BeneficiaryDonationManager.abi.json";
 import { toUSDString } from "../utils/web3utils";
+import chestImage from "../../../public/chest.png";
+import Image from "next/image";
 
 export default function Page() {
   // Hooks
@@ -136,34 +138,37 @@ export default function Page() {
 
   // JSX
   const banner = (
-    <div className="flex flex-col bg-red-light p-8 my-5 rounded-md">
-      <h1>Total Donations: ${toUSDString(totalDonations)}</h1>
-      <p>
-        Not sure who to donate to? Donate directly to the pool and let the
-        community decide where your funds go!
-      </p>
-      <p>Your USDC balance: {usdcBalance}</p>
-      <div className="mt-4 flex-col flex items-start gap-4">
-        <Input
-          className="w-96"
-          placeholder="eg. 1000 USDC"
-          unit="USDC"
-          onChange={(value) => {
-            setInputValue(value);
-          }}
-        />
-        <Button title="Donate" onClick={depositHandler} />
+    <div className="flex bg-red-light p-8 rounded-md justify-between">
+      <div className="flex flex-col">
+        <h1>Total Donations: ${toUSDString(totalDonations)}</h1>
+        <p>
+          Not sure who to donate to? Donate directly to the pool and let the
+          community decide where your funds go!
+        </p>
+        <p>Your USDC balance: {usdcBalance}</p>
+        <div className="mt-4 flex-col flex items-start gap-4">
+          <Input
+            className="w-96"
+            placeholder="eg. 1000 USDC"
+            unit="USDC"
+            onChange={(value) => {
+              setInputValue(value);
+            }}
+          />
+          <Button title="Donate" onClick={depositHandler} />
+        </div>
       </div>
+      <Image src={chestImage} width={300} height={300} alt="chest"></Image>
     </div>
   );
 
   return (
-    <div className="mt-6">
-      <section className="ml-8">
+    <div className="">
+      <section className="">{banner}</section>
+      <section className="ml-8 mt-4 mb-8">
         <h1>Accredited Projects </h1>
         <p>Donate to your favourite causes!</p>
       </section>
-      <section>{banner}</section>
       <Gallery />
     </div>
   );
