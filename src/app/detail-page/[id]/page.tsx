@@ -10,13 +10,15 @@ import ETH from "../../../../public/eth.png";
 import LINEA from "../../../../public/linea.png";
 import MANTLE from "../../../../public/mantle.png";
 import { useConnectWallet, useSetChain } from "@web3-onboard/react";
-import { ethers, Contract } from "ethers";
+import { ethers } from "ethers";
+import { Contract } from "ethers";
 import DonationRelayerAbi from "../../../ABIs/GmpDonationRelayer.json";
 import ERC20Abi from "../../../ABIs/erc20.abi.json";
 import DonationManagerAbi from "../../../ABIs/BeneficiaryDonationManager.abi.json";
 
 import { addresses } from "@/constants/addresses";
 import type { Chain } from "@web3-onboard/common/dist/types";
+import { reduceDecimals } from "../../utils/web3utils";
 
 export default function Page({ params }: { params: { id: number } }) {
   const viewModel: BeneficiaryViewModel = dummyData[params.id];
@@ -29,7 +31,8 @@ export default function Page({ params }: { params: { id: number } }) {
 
   const [mantleRelayerContract, setMantleRelayerContract] =
     useState<Contract>();
-  const [mantleUsdcContract, setMantleUsdcContract] = useState<Contract>();
+  const [lineaRelayerContract, setLineaRelayerContract] = useState<Contract>();
+  const [usdcContract, setUsdcContract] = useState<Contract>();
 
   const [donationManagerContract, setDonationManagerContract] =
     useState<Contract>();
@@ -41,6 +44,7 @@ export default function Page({ params }: { params: { id: number } }) {
   const [donationsReceived, setDonationsReceived] = useState<number>();
   const [totalDonationsReceived, setTotalDonationsReceived] =
     useState<number>();
+  const [percentageDonations, setPercentageDonations] = useState<number>();
   const [quadraticScore, setQuadraticScore] = useState<number>();
 
   const [
@@ -66,23 +70,29 @@ export default function Page({ params }: { params: { id: number } }) {
 
   useEffect(() => {
     const createContracts = async () => {
-      if (wallet) {
+      if (wallet?.provider) {
         let provider = new ethers.BrowserProvider(wallet.provider, "any");
         let signer = await provider.getSigner();
 
-        const internalDonationRelayerContract = new Contract(
+        const internalMantleDonationRelayerContract = new Contract(
           addresses.mantleRelayerContract,
           DonationRelayerAbi.abi,
           signer
         );
-        setMantleRelayerContract(internalDonationRelayerContract);
+        setMantleRelayerContract(internalMantleDonationRelayerContract);
+        const internalLineaDonationRelayerContract = new Contract(
+          addresses.lineaRelayerContract,
+          DonationRelayerAbi.abi,
+          signer
+        );
+        setLineaRelayerContract(internalLineaDonationRelayerContract);
 
-        const internalMantleUsdcContract = new Contract(
+        const internalUsdcContract = new Contract(
           addresses.mantleAusdcContract,
           ERC20Abi,
           signer
         );
-        setMantleUsdcContract(internalMantleUsdcContract);
+        setUsdcContract(internalUsdcContract);
 
         const internalDonationManagerContract = new Contract(
           addresses.donationManager,
@@ -104,7 +114,7 @@ export default function Page({ params }: { params: { id: number } }) {
         })
       );
     }
-  }, [connectedChain]);
+  }, [connectedChain, chainList]);
 
   useEffect(() => {
     if (chains) {
@@ -117,22 +127,45 @@ export default function Page({ params }: { params: { id: number } }) {
       if (donationManagerContract) {
         const epochIndex = 0;
         const beneficiaryIndex = params.id;
-        const donationsReceivedInEpoch =
-          await donationManagerContract.getEpochBeneficiaryDonation(
+        const donationsReceivedInEpochPromise =
+          donationManagerContract.getEpochBeneficiaryDonation(
             epochIndex,
             beneficiaryIndex
           );
+        const totalDonationsReceivedInEpochPromise =
+          donationManagerContract.getTotalEpochDonation(epochIndex);
+        const epochDonationDistributionPromise =
+          donationManagerContract.getEpochDonationDistribution(epochIndex);
+
+        const [
+          rawDonationsReceivedInEpoch,
+          rawTotalDonationsReceivedInEpoch,
+          epochDonationDistribution,
+        ] = await Promise.all([
+          donationsReceivedInEpochPromise,
+          totalDonationsReceivedInEpochPromise,
+          epochDonationDistributionPromise,
+        ]);
+
+        const donationsReceivedInEpoch = reduceDecimals(
+          rawDonationsReceivedInEpoch,
+          6
+        );
         setDonationsReceived(donationsReceivedInEpoch);
-        const totalDonationsReceivedInEpoch =
-          await donationManagerContract.getTotalEpochDonation(epochIndex);
+        const totalDonationsReceivedInEpoch = reduceDecimals(
+          rawTotalDonationsReceivedInEpoch,
+          6
+        );
         setTotalDonationsReceived(totalDonationsReceivedInEpoch);
-        const quadScoreList =
-          await donationManagerContract.getEpochDonationDistribution(
-            epochIndex
-          );
-        console.log("quadScore: ", quadScoreList);
-        const quadScore = quadScoreList[0][params.id] / 10000;
-        setQuadraticScore(quadScore);
+        const internalPercentageDonations =
+          (100 * (donationsReceivedInEpoch || 0)) /
+          (totalDonationsReceivedInEpoch || 1);
+        setPercentageDonations(internalPercentageDonations);
+
+        const { 0: _, 1: quadScoreArray } = epochDonationDistribution;
+        const rawQuadraticScore = quadScoreArray[params.id];
+        const internalQuadraticScore = reduceDecimals(rawQuadraticScore, 2);
+        setQuadraticScore(internalQuadraticScore);
       }
     };
     getDonationAmount();
@@ -142,32 +175,70 @@ export default function Page({ params }: { params: { id: number } }) {
   const donationHandler = async () => {
     const donationAmount = Number(parseFloat(inputValue) * Math.pow(10, 6));
 
-    const gasOptions = {
-      gasPrice: ethers.parseUnits("5", "gwei"),
-      gasLimit: 10000,
-    };
-
     const donateUsingMantle = async () => {
-      await mantleUsdcContract?.approve(mantleRelayerContract, donationAmount);
-      await mantleRelayerContract?.executeMainDonation(
-        params.id,
-        donationAmount,
-        1, // Donation type -- donate direct to beneficiary
-        gasOptions
-      );
+      try {
+        const approval = await usdcContract?.approve(
+          mantleRelayerContract,
+          donationAmount
+        );
+        await approval.wait();
+      } catch (e) {}
+
+      try {
+        const value = ethers.parseEther("143");
+        const donationTx = await lineaRelayerContract?.executeMainDonation(
+          "ethereum-2",
+          addresses.donationManager,
+          params.id,
+          donationAmount,
+          1, // Donation type -- donate direct to beneficiary
+          { value } // "pump it with a lot of gas" - rui yang :DDDDD
+        );
+        await donationTx.wait();
+        console.log("For Axelar:", donationTx.hash);
+      } catch (e) {}
     };
 
-    const donateUsingLinea = async () => {};
+    const donateUsingLinea = async () => {
+      try {
+        const approval = await usdcContract?.approve(
+          lineaRelayerContract,
+          donationAmount
+        );
+        await approval.wait();
+      } catch (e) {}
+
+      try {
+        const value = ethers.parseEther("0.1");
+        const donationTx = await lineaRelayerContract?.executeMainDonation(
+          "ethereum-2",
+          addresses.donationManager,
+          params.id,
+          donationAmount,
+          1, // Donation type -- donate direct to beneficiary
+          { value } // "pump it with a lot of gas" - rui yang :DDDDD
+        );
+        await donationTx.wait();
+        console.log("For Axelar:", donationTx.hash);
+      } catch (e) {}
+    };
 
     const donateUsingEthereum = async () => {
-      await mantleUsdcContract?.approve(
-        donationManagerContract,
-        donationAmount
-      );
-      await donationManagerContract?.donateBeneficiary(
-        params.id,
-        donationAmount
-      );
+      try {
+        const approval = await usdcContract?.approve(
+          donationManagerContract,
+          donationAmount
+        );
+        await approval.wait();
+      } catch (e) {}
+
+      try {
+        const donationTx = await donationManagerContract?.donateBeneficiary(
+          params.id,
+          donationAmount
+        );
+        await donationTx.wait();
+      } catch (e) {}
     };
 
     if (selectedChainIndex === 0) {
@@ -177,8 +248,6 @@ export default function Page({ params }: { params: { id: number } }) {
     } else if (selectedChainIndex === 2) {
       donateUsingLinea();
     }
-
-    // "pump it with a lot of gas" - rui yang
   };
 
   const setActiveTabHandler = (tabId: number) => {
@@ -228,11 +297,11 @@ export default function Page({ params }: { params: { id: number } }) {
               ${donationsReceived}
             </h1>
             <p className="mb-4">raised from 325 donors</p>
-            <ProgressBar percent={20} />
+            <ProgressBar percent={percentageDonations ?? 0} />
             <p>
-              {donationsReceived || 0 / (totalDonationsReceived || 1)}% of
-              donations went to {viewModel.name}, earning them {quadraticScore}{" "}
-              of the yield generated from our farm
+              {percentageDonations}% of donations went to {viewModel.name},
+              earning them {quadraticScore?.toFixed(0)}% of the yield generated
+              from our farm
             </p>
             <hr className="my-6 border-gray-400 sm:mx-auto lg:my-8" />
             <p>Select chain:</p>

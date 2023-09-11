@@ -106,7 +106,6 @@ export default function Page() {
     const approveAmount = async () => {
       if (usdcContract) {
         try {
-          console.log("test", inputValue);
           const tx = await usdcContract.approve(
             addresses.donationManager,
             Number(parseFloat(inputValue) * Math.pow(10, 6))
@@ -121,7 +120,6 @@ export default function Page() {
     const donateAmount = async () => {
       if (donationManagerContract) {
         try {
-          console.log("test", inputValue);
           const tx = await donationManagerContract.depositForEpochDistribution(
             Number(parseFloat(inputValue) * Math.pow(10, 6))
           );
