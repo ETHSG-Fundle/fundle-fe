@@ -105,10 +105,11 @@ export default function Page() {
       if (usdcContract) {
         try {
           console.log("test", inputValue);
-          await usdcContract.approve(
+          const tx = await usdcContract.approve(
             addresses.donationManager,
             Number(parseFloat(inputValue) * Math.pow(10, 6))
           );
+          await tx.wait();
         } catch (e) {
           // console.log(e);
         }
@@ -119,9 +120,10 @@ export default function Page() {
       if (donationManagerContract) {
         try {
           console.log("test", inputValue);
-          await donationManagerContract.depositForEpochDistribution(
+          const tx = await donationManagerContract.depositForEpochDistribution(
             Number(parseFloat(inputValue) * Math.pow(10, 6))
           );
+          await tx.wait();
         } catch (e) {
           // console.log(e);
         }
