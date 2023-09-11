@@ -6,7 +6,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { Contract } from "ethers";
 import erc20Abi from "../../ABIs/erc20.abi.json";
-import { useConnectWallet } from "@web3-onboard/react";
+import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import { ethers } from "ethers";
 import { addresses } from "@/constants/addresses";
 import donationManagerAbi from "../../ABIs/BeneficiaryDonationManager.abi.json";
@@ -38,12 +38,21 @@ export default function Page() {
   const [donationManagerContract, setDonationManagerContract] =
     useState<Contract>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const [
+    {
+      chains, // the list of chains that web3-onboard was initialized with
+      connectedChain, // the current chain the user's wallet is connected to
+      settingChain, // boolean indicating if the chain is in the process of being set
+    },
+    setChain, // function to call to initiate user to switch chains in their wallet
+  ] = useSetChain();
   useEffect(() => {
     // If the wallet has a provider than the wallet is connected
 
     const getUSDCBalance = async () => {
       if (wallet?.provider) {
+
+        await setChain({ chainId: "0x5" });
         // if using ethers v6 this is:
         let provider = new ethers.BrowserProvider(wallet.provider, "any");
         let signer = await provider.getSigner();
