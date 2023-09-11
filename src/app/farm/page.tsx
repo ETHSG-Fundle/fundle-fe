@@ -108,10 +108,11 @@ export default function Page() {
         parseFloat(inputValue1) * Math.pow(10, 18)
       );
       try {
-        await sdaiStrategyContract?.withdraw(
+        const tx = await sdaiStrategyContract?.withdraw(
           addresses.daiContract,
           depositAmountNumber
         );
+        await tx.wait()
         setIsLoading([false, false]);
       } catch (e) {
         setIsLoading([false, false]);
