@@ -3,7 +3,7 @@
 import StrategyCard from "@/components/StrategyCard";
 import React, { useEffect, useState } from "react";
 import { StrategyViewModel, strategyDummyData } from "@/constants/ViewModels";
-import { useConnectWallet } from "@web3-onboard/react";
+import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import ERC4626Abi from "../../ABIs/ERC4626Strategy.json";
 import { ethers, Contract } from "ethers";
 import { toUSDString } from "../utils/web3utils";
@@ -38,12 +38,20 @@ export default function Page() {
   ]);
   const [isLoading, setIsLoading] = useState<boolean[]>([false, false]);
   // const [sdaiBalance, setSdaiBalance] = useState<BigInt>(BigInt(0));
-
+  const [
+    {
+      chains, // the list of chains that web3-onboard was initialized with
+      connectedChain, // the current chain the user's wallet is connected to
+      settingChain, // boolean indicating if the chain is in the process of being set
+    },
+    setChain, // function to call to initiate user to switch chains in their wallet
+  ] = useSetChain();
   useEffect(() => {
     // If the wallet has a provider than the wallet is connected
 
     const getSdaiBalance = async () => {
       if (wallet?.provider) {
+        await setChain({ chainId: "0x5" });
         // if using ethers v6 this is:
         let provider = new ethers.BrowserProvider(wallet.provider, "any");
         let signer = await provider.getSigner();
@@ -112,7 +120,7 @@ export default function Page() {
           addresses.daiContract,
           depositAmountNumber
         );
-        await tx.wait()
+        await tx.wait();
         setIsLoading([false, false]);
       } catch (e) {
         setIsLoading([false, false]);

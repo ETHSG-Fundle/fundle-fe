@@ -73,7 +73,6 @@ export default function Page() {
     },
     setChain, // function to call to initiate user to switch chains in their wallet
   ] = useSetChain();
-
   useEffect(() => {
     const createReadOnlyContracts = async () => {
       let provider = new ethers.JsonRpcProvider(
@@ -97,6 +96,7 @@ export default function Page() {
 
     const createContracts = async () => {
       if (wallet?.provider) {
+        await setChain({ chainId: "0x5" });
         // if using ethers v6 this is:
         let provider = new ethers.BrowserProvider(wallet.provider, "any");
         let signer = await provider.getSigner();
@@ -188,8 +188,11 @@ export default function Page() {
       ]);
       const rawTotalDonationsAmount =
         totalDonationsAmountForMainPool + totalDonationsAmountForBeneficiaries;
+      console.log("raw, ", rawTotalDonationsAmount);
       const totalDonationsAmount = reduceDecimals(rawTotalDonationsAmount, 6);
-      setTotalDonations(totalDonationsAmount);
+      if (!isNaN(totalDonationsAmount)) {
+        setTotalDonations(totalDonationsAmount);
+      }
     };
     getTotalDonationsAmount();
   }, [readOnlyUsdcContract, readOnlyDonationManagerContract]);
@@ -317,7 +320,9 @@ export default function Page() {
   const banner = (
     <div className="flex bg-red-light p-8 rounded-md justify-between">
       <div className="flex flex-col">
-        <h1>Total Donations: ${totalDonations?.toFixed()}</h1>
+        <h1>
+          Total Donations: ${totalDonations ? totalDonations.toFixed(2) : "0"}
+        </h1>
         <p>
           Not sure who to donate to? Donate directly to the pool and let the
           community decide where your funds go!
