@@ -107,8 +107,11 @@ export default function Page() {
       ]);
       const rawTotalDonationsAmount =
         totalDonationsAmountForMainPool + totalDonationsAmountForBeneficiaries;
-      const totalDonationsAmount = reduceDecimals(rawTotalDonationsAmount,6);
-      setTotalDonations(totalDonationsAmount);
+      console.log("raw, ", rawTotalDonationsAmount);
+      const totalDonationsAmount = reduceDecimals(rawTotalDonationsAmount, 6);
+      if (!isNaN(totalDonationsAmount)) {
+        setTotalDonations(totalDonationsAmount);
+      }
     };
     getTotalDonationsAmount();
   }, [usdcContract, donationManagerContract]);
@@ -153,7 +156,9 @@ export default function Page() {
   const banner = (
     <div className="flex bg-red-light p-8 rounded-md justify-between">
       <div className="flex flex-col">
-        <h1>Total Donations: ${totalDonations?.toFixed()}</h1>
+        <h1>
+          Total Donations: ${totalDonations ? totalDonations.toFixed(2) : "0"}
+        </h1>
         <p>
           Not sure who to donate to? Donate directly to the pool and let the
           community decide where your funds go!
