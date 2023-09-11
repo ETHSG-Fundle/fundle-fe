@@ -52,7 +52,7 @@ export const strategyDummyData: StrategyViewModel[] = [
     name: "sDai",
     currency: "DAI",
     image: sdaiImage,
-    yieldPercentage: 0.5,
+    yieldPercentage: 5,
     balance: 100,
     userYield: 0.5,
     totalYield: 5,
@@ -64,7 +64,7 @@ export const strategyDummyData: StrategyViewModel[] = [
     currency: "USDC-YT",
     image:
       "https://storage.googleapis.com/stage-pendle-bucket-a/images/uploads/1dfb3910-475d-4f22-9180-22a9c6e54674.svg",
-    yieldPercentage: 0.5,
+    yieldPercentage: 4,
     balance: 100,
     userYield: 0.5,
     totalYield: 5,

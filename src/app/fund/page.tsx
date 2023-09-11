@@ -37,6 +37,7 @@ export default function Page() {
   const [usdcContract, setUsdcContract] = useState<Contract>();
   const [donationManagerContract, setDonationManagerContract] =
     useState<Contract>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     // If the wallet has a provider than the wallet is connected
@@ -103,6 +104,7 @@ export default function Page() {
   }, [usdcContract, donationManagerContract]);
 
   const depositHandler = async () => {
+    setIsLoading(true);
     const approveAmount = async () => {
       if (usdcContract) {
         try {
@@ -111,21 +113,24 @@ export default function Page() {
             Number(parseFloat(inputValue) * Math.pow(10, 6))
           );
           await tx.wait();
+          setIsLoading(false);
         } catch (e) {
-          // console.log(e);
+          setIsLoading(false);
         }
       }
     };
 
     const donateAmount = async () => {
+      setIsLoading(true);
       if (donationManagerContract) {
         try {
           const tx = await donationManagerContract.depositForEpochDistribution(
             Number(parseFloat(inputValue) * Math.pow(10, 6))
           );
           await tx.wait();
+          setIsLoading(false);
         } catch (e) {
-          // console.log(e);
+          setIsLoading(false);
         }
       }
     };
@@ -153,7 +158,12 @@ export default function Page() {
               setInputValue(value);
             }}
           />
-          <Button title="Donate" onClick={depositHandler} />
+          <Button
+            className="w-36"
+            title="Donate"
+            onClick={depositHandler}
+            isLoading={isLoading}
+          />
         </div>
       </div>
       <Image src={chestImage} width={300} height={300} alt="chest"></Image>

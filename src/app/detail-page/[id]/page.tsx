@@ -29,14 +29,7 @@ export default function Page({ params }: { params: { id: number } }) {
     { name: "Linea", image: LINEA },
   ];
 
-  const [mantleRelayerContract, setMantleRelayerContract] =
-    useState<Contract>();
-  const [lineaRelayerContract, setLineaRelayerContract] = useState<Contract>();
-  const [usdcContract, setUsdcContract] = useState<Contract>();
-
-  const [donationManagerContract, setDonationManagerContract] =
-    useState<Contract>();
-
+  //Values
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>();
   const [chainList, setChainList] = useState<Chain[]>();
@@ -46,6 +39,15 @@ export default function Page({ params }: { params: { id: number } }) {
     useState<number>();
   const [percentageDonations, setPercentageDonations] = useState<number>();
   const [quadraticScore, setQuadraticScore] = useState<number>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Contracts
+  const [mantleRelayerContract, setMantleRelayerContract] =
+    useState<Contract>();
+  const [lineaRelayerContract, setLineaRelayerContract] = useState<Contract>();
+  const [usdcContract, setUsdcContract] = useState<Contract>();
+  const [donationManagerContract, setDonationManagerContract] =
+    useState<Contract>();
 
   const [
     {
@@ -176,13 +178,16 @@ export default function Page({ params }: { params: { id: number } }) {
     const donationAmount = Number(parseFloat(inputValue) * Math.pow(10, 6));
 
     const donateUsingMantle = async () => {
+      setIsLoading(true);
       try {
         const approval = await usdcContract?.approve(
           mantleRelayerContract,
           donationAmount
         );
         await approval.wait();
-      } catch (e) {}
+      } catch (e) {
+        setIsLoading(false);
+      }
 
       try {
         const value = ethers.parseEther("143");
@@ -196,17 +201,23 @@ export default function Page({ params }: { params: { id: number } }) {
         );
         await donationTx.wait();
         console.log("For Axelar:", donationTx.hash);
-      } catch (e) {}
+        setIsLoading(false);
+      } catch (e) {
+        setIsLoading(false);
+      }
     };
 
     const donateUsingLinea = async () => {
+      setIsLoading(true);
       try {
         const approval = await usdcContract?.approve(
           lineaRelayerContract,
           donationAmount
         );
         await approval.wait();
-      } catch (e) {}
+      } catch (e) {
+        setIsLoading(false);
+      }
 
       try {
         const value = ethers.parseEther("0.1");
@@ -220,17 +231,23 @@ export default function Page({ params }: { params: { id: number } }) {
         );
         await donationTx.wait();
         console.log("For Axelar:", donationTx.hash);
-      } catch (e) {}
+        setIsLoading(false);
+      } catch (e) {
+        setIsLoading(false);
+      }
     };
 
     const donateUsingEthereum = async () => {
+      setIsLoading(true);
       try {
         const approval = await usdcContract?.approve(
           donationManagerContract,
           donationAmount
         );
         await approval.wait();
-      } catch (e) {}
+      } catch (e) {
+        setIsLoading(false);
+      }
 
       try {
         const donationTx = await donationManagerContract?.donateBeneficiary(
@@ -238,7 +255,10 @@ export default function Page({ params }: { params: { id: number } }) {
           donationAmount
         );
         await donationTx.wait();
-      } catch (e) {}
+        setIsLoading(false);
+      } catch (e) {
+        setIsLoading(false);
+      }
     };
 
     if (selectedChainIndex === 0) {
@@ -327,6 +347,7 @@ export default function Page({ params }: { params: { id: number } }) {
               title="Donate"
               isRounded={true}
               onClick={donationHandler}
+              isLoading={isLoading}
             />
           </div>
         </div>
