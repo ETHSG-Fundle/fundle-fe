@@ -1,12 +1,14 @@
 import Image, { StaticImageData } from "next/image";
 import React from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import Tooltip from "./Tooltip";
 
 export default function MiniSelector({
   labels,
   images,
   activeTab,
   setActiveTab,
+  setToolTip,
   isLoading,
 }: {
   labels: string[];
@@ -36,6 +38,7 @@ export default function MiniSelector({
           >
             <Image src={images[1]} alt="icon" width={20} />
           </div>
+
           <div
             className={activeTab === 2 ? activeStyle : inactiveStyle}
             onClick={() => setActiveTab(2)}

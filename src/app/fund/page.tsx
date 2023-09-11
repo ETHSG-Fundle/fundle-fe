@@ -1,23 +1,30 @@
 "use client";
 
+//Abis
+import DonationManagerAbi from "../../ABIs/BeneficiaryDonationManager.abi.json";
+import DonationRelayerAbi from "../../ABIs/GmpDonationRelayer.json";
+import ERC20Abi from "../../ABIs/erc20.abi.json";
+
+//Components
 import Gallery from "@/components/Gallery";
-import { useState, useEffect } from "react";
+import MiniSelector from "@/components/MiniSelector";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import { Contract } from "ethers";
-import erc20Abi from "../../ABIs/erc20.abi.json";
-import { useConnectWallet, useSetChain } from "@web3-onboard/react";
-import { ethers } from "ethers";
-import { addresses } from "@/constants/addresses";
-import donationManagerAbi from "../../ABIs/BeneficiaryDonationManager.abi.json";
-import { reduceDecimals, toUSDString } from "../utils/web3utils";
-import chestImage from "../../../public/chest.png";
-import Image from "next/image";
-import type { Chain } from "@web3-onboard/common/dist/types";
-import MiniSelector from "@/components/Miniselector";
+
+//Resources
 import ETH from "../../../public/eth.png";
 import LINEA from "../../../public/linea.png";
 import MANTLE from "../../../public/mantle.png";
+import chestImage from "../../../public/chest.png";
+
+import { useState, useEffect } from "react";
+import { Contract } from "ethers";
+import { ethers } from "ethers";
+import { useConnectWallet, useSetChain } from "@web3-onboard/react";
+import type { Chain } from "@web3-onboard/common/dist/types";
+import { addresses } from "@/constants/addresses";
+import Image from "next/image";
+import { reduceDecimals, toUSDString } from "../utils/web3utils";
 
 export default function Page() {
   // Hooks
@@ -44,9 +51,7 @@ export default function Page() {
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>();
   const [chainList, setChainList] = useState<Chain[]>();
-
   const [totalDonations, setTotalDonations] = useState<number>(0);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Contracts
@@ -56,6 +61,9 @@ export default function Page() {
   const [mantleRelayerContract, setMantleRelayerContract] =
     useState<Contract>();
   const [lineaRelayerContract, setLineaRelayerContract] = useState<Contract>();
+  const [readOnlyDonationManagerContract, setReadOnlyDonationManagerContract] =
+    useState<Contract>();
+  const [readOnlyUsdcContract, setReadOnlyUsdcContract] = useState<Contract>();
 
   const [
     {
@@ -67,6 +75,26 @@ export default function Page() {
   ] = useSetChain();
 
   useEffect(() => {
+    const createReadOnlyContracts = async () => {
+      let provider = new ethers.JsonRpcProvider(
+        `https://public.blockchainnodeengine.app/eth_goerli?apikey=GCPWEB3_ETHSG`
+      );
+
+      const internalReadOnlyDonationContract = new Contract(
+        addresses.donationManager,
+        DonationManagerAbi.abi,
+        provider
+      );
+      setReadOnlyDonationManagerContract(internalReadOnlyDonationContract);
+
+      const internalReadOnlyUsdcContract = new Contract(
+        addresses.ausdcContract,
+        ERC20Abi,
+        provider
+      );
+      setReadOnlyUsdcContract(internalReadOnlyUsdcContract);
+    };
+
     const createContracts = async () => {
       if (wallet?.provider) {
         // if using ethers v6 this is:
@@ -75,33 +103,34 @@ export default function Page() {
 
         const internalMantleRelayerContract = new Contract(
           addresses.mantleRelayerContract,
-          donationManagerAbi.abi,
+          DonationRelayerAbi.abi,
           signer
         );
         setMantleRelayerContract(internalMantleRelayerContract);
         const internalLineaRelayerContract = new Contract(
           addresses.lineaRelayerContract,
-          donationManagerAbi.abi,
+          DonationRelayerAbi.abi,
           signer
         );
         setLineaRelayerContract(internalLineaRelayerContract);
 
         const internalUsdcContract = new Contract(
           addresses.ausdcContract,
-          erc20Abi,
+          ERC20Abi,
           signer
         );
         setUsdcContract(internalUsdcContract);
 
         const internalDonationManagerContract = new Contract(
           addresses.donationManager,
-          donationManagerAbi.abi,
+          DonationManagerAbi.abi,
           signer
         );
         setDonationManagerContract(internalDonationManagerContract);
       }
     };
 
+    createReadOnlyContracts();
     createContracts();
   }, [wallet]);
 
@@ -123,7 +152,6 @@ export default function Page() {
 
   useEffect(() => {
     // If the wallet has a provider than the wallet is connected
-
     const getUSDCBalance = async () => {
       if (usdcContract && wallet) {
         const rawUsdcBalance = await usdcContract.balanceOf(
@@ -142,14 +170,13 @@ export default function Page() {
     const getTotalDonationsAmount = async () => {
       let totalDonationsAmountForMainPoolPromise,
         totalDonationsAmountForBeneficiariesPromise;
-      if (usdcContract) {
-        totalDonationsAmountForMainPoolPromise = await usdcContract.balanceOf(
-          addresses.donationManager
-        );
+      if (readOnlyUsdcContract) {
+        totalDonationsAmountForMainPoolPromise =
+          await readOnlyUsdcContract.balanceOf(addresses.donationManager);
       }
-      if (donationManagerContract) {
+      if (readOnlyDonationManagerContract) {
         totalDonationsAmountForBeneficiariesPromise =
-          await donationManagerContract.getTotalEpochDonation(0);
+          await readOnlyDonationManagerContract.getTotalEpochDonation(0);
       }
 
       const [
@@ -165,7 +192,7 @@ export default function Page() {
       setTotalDonations(totalDonationsAmount);
     };
     getTotalDonationsAmount();
-  }, [usdcContract, donationManagerContract]);
+  }, [readOnlyUsdcContract, readOnlyDonationManagerContract]);
 
   const depositHandler = async () => {
     const donationAmount = Number(parseFloat(inputValue) * Math.pow(10, 6));
@@ -219,10 +246,10 @@ export default function Page() {
       }
 
       try {
-        const value = ethers.parseEther("143");
+        const value = ethers.parseEther("5");
         const donationTx = await mantleRelayerContract?.executeMainDonation(
           "ethereum-2",
-          addresses.donationManager,
+          addresses.goerliReceiverContract,
           0,
           donationAmount,
           2, // Donation type -- donate to quadratic pool
@@ -249,10 +276,10 @@ export default function Page() {
       }
 
       try {
-        const value = ethers.parseEther("143");
+        const value = ethers.parseEther("0.03");
         const donationTx = await lineaRelayerContract?.executeMainDonation(
           "ethereum-2",
-          addresses.donationManager,
+          addresses.goerliReceiverContract,
           0,
           donationAmount,
           2, // Donation type -- donate to quadratic pool
@@ -262,6 +289,7 @@ export default function Page() {
         console.log("For Axelar:", donationTx.hash);
         setIsLoading(false);
       } catch (e) {
+        console.log(e);
         setIsLoading(false);
       }
     };
@@ -281,6 +309,10 @@ export default function Page() {
     }
   };
 
+  const setToolTipHandler = (tabId: number, labels: string[]): string => {
+    return labels[tabId];
+  };
+
   // JSX
   const banner = (
     <div className="flex bg-red-light p-8 rounded-md justify-between">
@@ -290,7 +322,7 @@ export default function Page() {
           Not sure who to donate to? Donate directly to the pool and let the
           community decide where your funds go!
         </p>
-        <p>Donate via any chain:</p>
+        <p>Select any chain:</p>
         <MiniSelector
           labels={chainViewModel.map((chain) => chain.name)}
           images={chainViewModel.map((chain) => chain.image)}
@@ -298,11 +330,7 @@ export default function Page() {
           setActiveTab={setActiveTabHandler}
           isLoading={settingChain}
         />
-        <p>
-          Your USDC balance on {chainViewModel[selectedChainIndex || 0].name}:{" "}
-          {usdcBalance}
-        </p>
-        <div className="mt-4 flex-col flex items-start gap-4">
+        <div className="flex-col flex items-start gap-4">
           <Input
             className="w-96"
             placeholder="eg. 1000 USDC"
@@ -311,6 +339,10 @@ export default function Page() {
               setInputValue(value);
             }}
           />
+          <p>
+            Your USDC balance on {chainViewModel[selectedChainIndex || 0].name}:{" "}
+            {usdcBalance}
+          </p>
           <Button
             className="w-36"
             title="Donate"
