@@ -37,9 +37,9 @@ export default function StrategyCard({
             alt="icon"
             className="-ml-2 mr-4"
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col font-display">
             {viewModel.name}
-            <p className="text-sm italic text-white">Ethereum Mainnet</p>
+            <p className="text-sm italic text-white font-body">Ethereum Mainnet</p>
           </div>
           <div className="grow" />
           <div className="flex flex-col items-end">
