@@ -78,26 +78,50 @@ export default function Page() {
     getSdaiBalance();
   }, [wallet]);
 
-  const depositHandler = async () => {
-    setIsLoading([true, false]);
-    const depositAmountNumber = String(
-      parseFloat(inputValue1) * Math.pow(10, 18)
-    );
-    try {
-      const tx = await daiContract?.approve(
-        addresses.sdaiStrategyContract,
-        depositAmountNumber
+  const primaryActionHandler = async () => {
+    const deposit = async () => {
+      setIsLoading([true, false]);
+      const depositAmountNumber = String(
+        parseFloat(inputValue1) * Math.pow(10, 18)
       );
+      try {
+        const tx = await daiContract?.approve(
+          addresses.sdaiStrategyContract,
+          depositAmountNumber
+        );
 
-      await tx.wait();
+        await tx.wait();
 
-      await sdaiStrategyContract?.deposit(
-        addresses.daiContract,
-        depositAmountNumber
+        await sdaiStrategyContract?.deposit(
+          addresses.daiContract,
+          depositAmountNumber
+        );
+        setIsLoading([false, false]);
+      } catch (e) {
+        setIsLoading([false, false]);
+      }
+    };
+
+    const withdraw = async () => {
+      setIsLoading([true, false]);
+      const depositAmountNumber = String(
+        parseFloat(inputValue1) * Math.pow(10, 18)
       );
-      setIsLoading([false, false]);
-    } catch (e) {
-      setIsLoading([false, false]);
+      try {
+        await sdaiStrategyContract?.withdraw(
+          addresses.daiContract,
+          depositAmountNumber
+        );
+        setIsLoading([false, false]);
+      } catch (e) {
+        setIsLoading([false, false]);
+      }
+    };
+
+    if (activeTab1 === 0) {
+      deposit();
+    } else if (activeTab1 === 1) {
+      withdraw();
     }
   };
 
@@ -116,7 +140,7 @@ export default function Page() {
             setActiveTab={strategy.id === 0 ? setActiveTab1 : setActiveTab2}
             userBalance={toUSDString(balances[strategy.id], 18)}
             depositedBalance={toUSDString(depositedBalances[strategy.id], 18)}
-            depositHandler={depositHandler}
+            depositHandler={primaryActionHandler}
             isLoading={isLoading[strategy.id]}
           />
         ))}
