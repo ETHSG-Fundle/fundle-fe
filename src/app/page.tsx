@@ -37,8 +37,8 @@ export default function Home() {
           quadratically to the community's favourite beneficiaries!`}
         </p>
         <div className="flex gap-2">
-          <Button onClick={goToFund} title="Fund!" />
-          <Button isSecondary={true} onClick={goToFarm} title="Farm!" />
+          <Button onClick={goToFund} title="Fund" />
+          <Button isSecondary={true} onClick={goToFarm} title="Farm" />
         </div>
       </div>
       <Image
@@ -67,7 +67,7 @@ export default function Home() {
       <p className="text-sm text-slate-500 font-light text-center mb-4">
          With quadratic funding, small amounts have big impacts on the cause you are supporting.
       </p>
-      <Button title="Fund Now!" isRounded={true} onClick={goToFund} />
+      <Button title="Fund" isRounded={true} onClick={goToFund} />
     </div>
   );
 
@@ -79,7 +79,7 @@ export default function Home() {
         Give nothing but time. Treat Fundle like a savings account
         and you can help our NPOs without spending anything.
       </p>
-      <Button title="Farm Now!" isRounded={true} onClick={goToFarm} />
+      <Button title="Farm" isRounded={true} onClick={goToFarm} />
     </div>
   );
 
