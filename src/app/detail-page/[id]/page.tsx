@@ -9,19 +9,25 @@ import ChainSelector from "@/components/ChainSelector";
 import ETH from "../../../../public/eth.png";
 import LINEA from "../../../../public/linea.png";
 import MANTLE from "../../../../public/mantle.png";
-import { useConnectWallet } from "@web3-onboard/react";
+import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import { ethers, Contract } from "ethers";
 import DonationRelayerAbi from "../../../ABIs/GmpDonationRelayer.json";
 import ERC20Abi from "../../../ABIs/erc20.abi.json";
 import DonationManagerAbi from "../../../ABIs/BeneficiaryDonationManager.abi.json";
 
 import { addresses } from "@/constants/addresses";
+import type { ConnectedChain } from "@web3-onboard/core/dist/types";
+import type { Chain } from "@web3-onboard/common/dist/types";
 
 export default function Page({ params }: { params: { id: number } }) {
   const viewModel: BeneficiaryViewModel = dummyData[params.id];
 
-  const chains = ["Ethereum", "Mantle", "Linea"];
-  const images = [ETH, MANTLE, LINEA];
+  const chainViewModel = [
+    { name: "Ethereum", image: ETH },
+    { name: "Mantle", image: MANTLE },
+    { name: "Linea", image: LINEA },
+  ];
+
   const [tab, setTab] = useState(0);
 
   const [mantleRelayerContract, setMantleRelayerContract] =
@@ -32,6 +38,8 @@ export default function Page({ params }: { params: { id: number } }) {
     useState<Contract>();
 
   const [inputValue, setInputValue] = useState<string>("");
+  const [selectedChainIndex, setSelectedChainIndex] = useState<number>();
+  const [chainList, setChainList] = useState<Chain[]>();
 
   const [
     {
@@ -44,6 +52,15 @@ export default function Page({ params }: { params: { id: number } }) {
     setWalletModules, // function to be called with an array of wallet modules to conditionally allow connection of wallet types i.e. setWalletModules([ledger, trezor, injected])
     setPrimaryWallet, // function that can set the primary wallet and/or primary account within that wallet. The wallet that is set needs to be passed in for the first parameter and if you would like to set the primary account, the address of that account also needs to be passed in
   ] = useConnectWallet();
+
+  const [
+    {
+      chains, // the list of chains that web3-onboard was initialized with
+      connectedChain, // the current chain the user's wallet is connected to
+      settingChain, // boolean indicating if the chain is in the process of being set
+    },
+    setChain, // function to call to initiate user to switch chains in their wallet
+  ] = useSetChain();
 
   useEffect(() => {
     const createContracts = async () => {
@@ -77,6 +94,54 @@ export default function Page({ params }: { params: { id: number } }) {
     createContracts();
   }, [wallet]);
 
+  useEffect(() => {
+    if (connectedChain) {
+      console.log("connectedChainId", connectedChain.id);
+      console.log(
+        "find index",
+        chainList?.findIndex((chain) => {
+          return chain.id == connectedChain.id;
+        })
+      );
+      setSelectedChainIndex(
+        chainList?.findIndex((chain) => {
+          return chain.id == connectedChain.id;
+        })
+      );
+    }
+  }, [connectedChain]);
+
+  useEffect(() => {
+    if (chains) {
+      setChainList(chains);
+    }
+  }, [chains]);
+
+  // useEffect(() => {
+  //   if (connectedChain) {
+  //     console.log(
+  //       chains.findIndex((chain) => {
+  //         chain.id == connectedChain.id;
+  //       })
+  //     );
+  //     setTab(
+  //       chains.findIndex((chain) => {
+  //         chain.id == connectedChain.id;
+  //       })
+  //     );
+  //   }
+  // }, [connectedChain]);
+
+  // useEffect(() => {
+  //   if (wallet) {
+  //     if (connectedChain?.id === chains[tab].id) {
+  //     } else {
+  //       setChain({ chainId: chains[tab].id });
+  //     }
+  //   }
+  // }, [wallet, tab]);
+
+  // Actions
   const donationHandler = async () => {
     const donationAmount = Number(parseFloat(inputValue) * Math.pow(10, 6));
 
@@ -110,14 +175,25 @@ export default function Page({ params }: { params: { id: number } }) {
 
     if (tab === 0) {
       donateUsingEthereum();
-    } else if (tab == 1) {
+    } else if (tab === 1) {
       donateUsingMantle();
-    } else if (tab == 2) {
+    } else if (tab === 2) {
       donateUsingLinea();
     }
 
     // "pump it with a lot of gas" - rui yang
   };
+
+  const setActiveTabHandler = (tabId: number) => {
+    if (chainList) {
+      setChain({ chainId: chainList[tabId].id });
+    }
+  };
+
+  useEffect(() => {
+    console.log("connectedChain", connectedChain);
+    console.log("chains", chains);
+  }, [connectedChain, chains]);
 
   return (
     <div className="flex p-16">
@@ -163,10 +239,11 @@ export default function Page({ params }: { params: { id: number } }) {
             <hr className="my-6 border-gray-400 sm:mx-auto lg:my-8" />
             <p>Select chain:</p>
             <ChainSelector
-              labels={chains}
-              images={images}
-              activeTab={tab}
-              setActiveTab={setTab}
+              labels={chainViewModel.map((chain) => chain.name)}
+              images={chainViewModel.map((chain) => chain.image)}
+              activeTab={selectedChainIndex || 0}
+              setActiveTab={setActiveTabHandler}
+              isLoading={settingChain}
             />
             <p className="mb-2">Enter donation amount:</p>
             <Input

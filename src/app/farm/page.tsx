@@ -75,7 +75,7 @@ export default function Page() {
     } catch (e) {}
   };
 
-  
+
 
   return (
     <div className="flex flex-col items-center">

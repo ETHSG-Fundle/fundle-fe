@@ -5,12 +5,12 @@ import injectedModule from "@web3-onboard/injected-wallets";
 
 const INFURA_KEY = process.env.NEXT_PUBLIC_INFURA_API_KEY;
 
-const ethereumRopsten = {
-  id: "0x3",
-  token: "rETH",
-  label: "Ethereum Ropsten",
-  rpcUrl: `https://ropsten.infura.io/v3/${INFURA_KEY}`,
-};
+// const ethereumRopsten = {
+//   id: "0x3",
+//   token: "rETH",
+//   label: "Ethereum Ropsten",
+//   rpcUrl: `https://ropsten.infura.io/v3/${INFURA_KEY}`,
+// };
 
 const ethereumGoerli = {
   id: "0x5",
@@ -19,7 +19,21 @@ const ethereumGoerli = {
   rpcUrl: `https://goerli.infura.io/v3/${INFURA_KEY}`,
 };
 
-const chains = [ethereumGoerli];
+const mantle = {
+  id: "0x1389",
+  token: "MNT",
+  label: "Mantle Testnet",
+  rpcUrl: "https://rpc.testnet.mantle.xyz/",
+};
+
+const linea = {
+  id: "0xe704",
+  token: "ETH",
+  label: "Linea",
+  rpcUrl: `https://linea-goerli.infura.io/v3/${INFURA_KEY}`,
+};
+
+const chains = [ethereumGoerli, mantle, linea];
 const wallets = [injectedModule()];
 
 const web3Onboard = init({
