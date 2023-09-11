@@ -264,7 +264,7 @@ export default function Page({ params }: { params: { id: number } }) {
 
       try {
         const value = ethers.parseEther("5");
-        const donationTx = await lineaRelayerContract?.executeMainDonation(
+        const donationTx = await mantleRelayerContract?.executeMainDonation(
           "ethereum-2",
           addresses.goerliReceiverContract,
           params.id,
