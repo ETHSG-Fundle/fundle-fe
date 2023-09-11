@@ -36,6 +36,7 @@ export default function Page() {
     BigInt(0),
     BigInt(0),
   ]);
+  const [isLoading, setIsLoading] = useState<boolean[]>([false, false]);
   // const [sdaiBalance, setSdaiBalance] = useState<BigInt>(BigInt(0));
 
   useEffect(() => {
@@ -78,17 +79,26 @@ export default function Page() {
   }, [wallet]);
 
   const depositHandler = async () => {
+    setIsLoading([true, false]);
     const depositAmountNumber = String(
       parseFloat(inputValue1) * Math.pow(10, 18)
     );
     try {
-      await daiContract?.approve(addresses.sdaiStrategyContract, depositAmountNumber);
-      console.log("dai contract approved")
+      const tx = await daiContract?.approve(
+        addresses.sdaiStrategyContract,
+        depositAmountNumber
+      );
+
+      await tx.wait();
+
       await sdaiStrategyContract?.deposit(
         addresses.daiContract,
         depositAmountNumber
       );
-    } catch (e) {}
+      setIsLoading([false, false]);
+    } catch (e) {
+      setIsLoading([false, false]);
+    }
   };
 
   return (
@@ -104,9 +114,10 @@ export default function Page() {
             setInputValue={strategy.id === 0 ? setInputValue1 : setInputValue2}
             activeTab={strategy.id === 0 ? activeTab1 : activeTab2}
             setActiveTab={strategy.id === 0 ? setActiveTab1 : setActiveTab2}
-            userBalance={balances[strategy.id].toString()}
-            depositedBalance = {depositedBalances[strategy.id].toString()}
+            userBalance={toUSDString(balances[strategy.id], 18)}
+            depositedBalance={toUSDString(depositedBalances[strategy.id], 18)}
             depositHandler={depositHandler}
+            isLoading={isLoading[strategy.id]}
           />
         ))}
       </div>

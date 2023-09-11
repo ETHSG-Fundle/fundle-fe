@@ -15,6 +15,7 @@ export default function StrategyCard({
   userBalance,
   depositHandler,
   depositedBalance,
+  isLoading,
 }: {
   viewModel: StrategyViewModel;
   inputValue: string;
@@ -24,6 +25,7 @@ export default function StrategyCard({
   userBalance: string;
   depositHandler: () => void;
   depositedBalance: string;
+  isLoading: boolean;
 }) {
   return (
     <div className="flex flex-col justify-center w-full p-8">
@@ -39,7 +41,9 @@ export default function StrategyCard({
           />
           <div className="flex flex-col font-display">
             {viewModel.name}
-            <p className="text-sm italic text-white font-body">Ethereum Mainnet</p>
+            <p className="text-sm italic text-white font-body">
+              Ethereum Mainnet
+            </p>
           </div>
           <div className="grow" />
           <div className="flex flex-col items-end">
@@ -95,6 +99,7 @@ export default function StrategyCard({
           isRounded={true}
           title={activeTab === 0 ? "Deposit" : "Withdraw"}
           onClick={depositHandler}
+          isLoading={isLoading}
         />
       </div>
     </div>
