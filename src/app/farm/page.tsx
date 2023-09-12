@@ -31,7 +31,7 @@ export default function Page() {
   const [sdaiStrategyContract, setSdaiStrategyContract] = useState<Contract>();
   const [daiContract, setDaiContract] = useState<Contract>();
   const [daiBalance, setDaiBalance] = useState<BigInt>(BigInt(0));
-  const [balances, setBalances] = useState<BigInt[]>([BigInt(0), BigInt(0)]);
+  const [balances, setBalances] = useState<BigInt[]>([BigInt(-1), BigInt(0)]);
   const [depositedBalances, setDepositedBalances] = useState<BigInt[]>([
     BigInt(0),
     BigInt(0),
@@ -180,7 +180,7 @@ export default function Page() {
             setInputValue={strategy.id === 0 ? setInputValue1 : setInputValue2}
             activeTab={strategy.id === 0 ? activeTab1 : activeTab2}
             setActiveTab={strategy.id === 0 ? setActiveTab1 : setActiveTab2}
-            userBalance={toUSDString(balances[strategy.id], 18)}
+            userBalance={wallet ? toUSDString(balances[strategy.id], 18) : "-"}
             depositedBalance={toUSDString(depositedBalances[strategy.id], 18)}
             depositHandler={primaryActionHandler}
             userYield={totalYield[strategy.id]?.toFixed(2)}
