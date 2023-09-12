@@ -332,7 +332,7 @@ export default function Page() {
     <div className="flex bg-red-light p-8 rounded-md justify-between">
       <div className="flex flex-col">
         <h1>
-          Total Donations: ${totalDonations ? totalDonations.toFixed(2) : "0"}
+          Total Donations: ${totalDonations ? totalDonations.toFixed(2) : "-"}
         </h1>
         <p>
           Not sure who to donate to? Donate directly to the pool and let the
