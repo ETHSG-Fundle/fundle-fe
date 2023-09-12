@@ -125,10 +125,13 @@ export default function Page() {
 
         await tx.wait();
 
-        await sdaiStrategyContract?.deposit(
+        let depositTx = await sdaiStrategyContract?.deposit(
           addresses.daiContract,
           depositAmountNumber
         );
+
+        await depositTx.wait()
+        
         setIsLoading([false, false]);
       } catch (e) {
         setIsLoading([false, false]);
