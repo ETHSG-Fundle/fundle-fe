@@ -106,11 +106,11 @@ export default function Page() {
   }, [wallet, setChain]);
 
   const primaryActionHandler = async () => {
+    const depositAmountNumber = String(
+      BigInt(parseFloat(inputValue1) * 100) * BigInt(Math.pow(10, 16))
+    );
     const deposit = async () => {
       setIsLoading([true, false]);
-      const depositAmountNumber = String(
-        BigInt(parseFloat(inputValue1) * 100) * BigInt(Math.pow(10, 16))
-      );
       try {
         const tx = await daiContract?.approve(
           addresses.sdaiStrategyContract,
@@ -131,9 +131,6 @@ export default function Page() {
 
     const withdraw = async () => {
       setIsLoading([true, false]);
-      const depositAmountNumber = String(
-        parseFloat(inputValue1) * Math.pow(10, 18)
-      );
       try {
         const tx = await sdaiStrategyContract?.withdraw(
           addresses.daiContract,
