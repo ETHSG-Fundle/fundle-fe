@@ -7,6 +7,6 @@ export const addresses = {
   lineaRelayerContract: "0x1FFaa029FD4076c38e75A3dde600dd4A527a3229",
   ausdcContract: "0x254d06f33bDc5b8ee05b2ea472107E300226659A",
   clonedDaiContract: "0x4023Ec52F26Cb9093D642cd7e40751EeA304eAbe",
-  sdaiStrategyContract: "0xe8f91eaa5b8273Db22beEBb890C194d3D0D2e582",
+  sdaiStrategyContract: "0x10371645FcB4668E04807baB7A34564fd745A111",
   goerliReceiverContract: "0xc027F2D4A76E6e86369aFbA397cfc1a6Fd97D3b5",
 };

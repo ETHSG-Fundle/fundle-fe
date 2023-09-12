@@ -6,7 +6,7 @@ import { StrategyViewModel, strategyDummyData } from "@/constants/ViewModels";
 import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import ERC4626Abi from "../../ABIs/ERC4626Strategy.json";
 import { ethers, Contract } from "ethers";
-import { toUSDString } from "../utils/web3utils";
+import { reduceDecimals, toUSDString } from "../utils/web3utils";
 import { addresses } from "@/constants/addresses";
 import ERC20Abi from "../../ABIs/erc20.abi.json";
 
@@ -36,6 +36,7 @@ export default function Page() {
     BigInt(0),
     BigInt(0),
   ]);
+  const [totalYield, setTotalYield] = useState<number[]>([0.5, 0.5]);
   const [isLoading, setIsLoading] = useState<boolean[]>([false, false]);
   // const [sdaiBalance, setSdaiBalance] = useState<BigInt>(BigInt(0));
   const [
@@ -80,6 +81,24 @@ export default function Page() {
           wallet.accounts[0].address
         );
         setBalances([internalDaiBalance, BigInt(0)]);
+
+        const internalUnderlyingSdaiLPPromise: Promise<bigint> =
+          internalSdaiStrategyContract.balanceOf(wallet.accounts[0].address);
+        const internalCurrentSharesAndUnderlyingStakePromise: Promise<{
+          0: bigint;
+          1: bigint;
+        }> = internalSdaiStrategyContract.getCurrentSharesAndUnderlyingStake(
+          wallet.accounts[0].address
+        );
+        const [internalUnderlyingSdaiLP, { 0: _, 1: internalUnderlying }] =
+          await Promise.all([
+            internalUnderlyingSdaiLPPromise,
+            internalCurrentSharesAndUnderlyingStakePromise,
+          ]);
+        const rawInternalTotalYield =
+          internalUnderlying - internalUnderlyingSdaiLP;
+        const internalTotalYield = reduceDecimals(rawInternalTotalYield, 18);
+        setTotalYield([internalTotalYield, 0.5]);
       }
     };
 
@@ -90,7 +109,7 @@ export default function Page() {
     const deposit = async () => {
       setIsLoading([true, false]);
       const depositAmountNumber = String(
-        parseFloat(inputValue1) * Math.pow(10, 18)
+        BigInt(parseFloat(inputValue1) * 100) * BigInt(Math.pow(10, 16))
       );
       try {
         const tx = await daiContract?.approve(
@@ -150,6 +169,7 @@ export default function Page() {
             userBalance={toUSDString(balances[strategy.id], 18)}
             depositedBalance={toUSDString(depositedBalances[strategy.id], 18)}
             depositHandler={primaryActionHandler}
+            userYield={totalYield[strategy.id]?.toFixed(2)}
             isLoading={isLoading[strategy.id]}
           />
         ))}
