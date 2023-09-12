@@ -8,5 +8,5 @@ export const addresses = {
   ausdcContract: "0x254d06f33bDc5b8ee05b2ea472107E300226659A",
   clonedDaiContract: "0x4023Ec52F26Cb9093D642cd7e40751EeA304eAbe",
   sdaiStrategyContract: "0xe8f91eaa5b8273Db22beEBb890C194d3D0D2e582",
-  goerliReceiverContract: "0x59922Af38161b1DE091369b525d4dD92c5ac5bCE",
+  goerliReceiverContract: "0xc027F2D4A76E6e86369aFbA397cfc1a6Fd97D3b5",
 };
