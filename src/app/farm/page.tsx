@@ -99,7 +99,9 @@ export default function Page() {
           ]);
         const rawInternalTotalYield =
           internalUnderlying - internalUnderlyingSdaiLP;
-        const internalTotalYield = reduceDecimals(rawInternalTotalYield, 18);
+        const internalTotalYield = Math.abs(
+          reduceDecimals(rawInternalTotalYield, 18)
+        );
         setTotalYield([internalTotalYield, 0.5]);
       }
     };
@@ -130,8 +132,8 @@ export default function Page() {
           depositAmountNumber
         );
 
-        await depositTx.wait()
-        
+        await depositTx.wait();
+
         setIsLoading([false, false]);
       } catch (e) {
         setIsLoading([false, false]);
