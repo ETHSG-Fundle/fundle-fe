@@ -38,7 +38,9 @@ export default function Page() {
   ]);
   const [totalYield, setTotalYield] = useState<number[]>([0.5, 0.5]);
   const [isLoading, setIsLoading] = useState<boolean[]>([false, false]);
-  // const [sdaiBalance, setSdaiBalance] = useState<BigInt>(BigInt(0));
+  const [shouldRefetchDonationAmounts, setShouldRefetchDonationAmounts] =
+    useState<boolean>(true);
+
   const [
     {
       chains, // the list of chains that web3-onboard was initialized with
@@ -102,8 +104,12 @@ export default function Page() {
       }
     };
 
-    getSdaiBalance();
-  }, [wallet, setChain]);
+    const performAction = async () => {
+      await getSdaiBalance();
+      setShouldRefetchDonationAmounts(false);
+    };
+    performAction();
+  }, [wallet, setChain, shouldRefetchDonationAmounts]);
 
   const primaryActionHandler = async () => {
     const depositAmountNumber = String(
@@ -143,11 +149,17 @@ export default function Page() {
       }
     };
 
-    if (activeTab1 === 0) {
-      deposit();
-    } else if (activeTab1 === 1) {
-      withdraw();
-    }
+    const performAction = async () => {
+      if (activeTab1 === 0) {
+        await deposit();
+        setShouldRefetchDonationAmounts(true);
+      } else if (activeTab1 === 1) {
+        await withdraw();
+        setShouldRefetchDonationAmounts(true);
+      }
+    };
+
+    performAction();
   };
 
   return (

@@ -64,6 +64,8 @@ export default function Page() {
   const [readOnlyDonationManagerContract, setReadOnlyDonationManagerContract] =
     useState<Contract>();
   const [readOnlyUsdcContract, setReadOnlyUsdcContract] = useState<Contract>();
+  const [shouldRefetchDonationAmounts, setShouldRefetchDonationAmounts] =
+    useState<boolean>(true);
 
   const [
     {
@@ -187,14 +189,21 @@ export default function Page() {
       ]);
       const rawTotalDonationsAmount =
         totalDonationsAmountForMainPool + totalDonationsAmountForBeneficiaries;
-      console.log("raw, ", rawTotalDonationsAmount);
       const totalDonationsAmount = reduceDecimals(rawTotalDonationsAmount, 6);
       if (!isNaN(totalDonationsAmount)) {
         setTotalDonations(totalDonationsAmount);
       }
     };
-    getTotalDonationsAmount();
-  }, [readOnlyUsdcContract, readOnlyDonationManagerContract]);
+    const runProcedure = async () => {
+      await getTotalDonationsAmount();
+      setShouldRefetchDonationAmounts(false);
+    };
+    runProcedure();
+  }, [
+    readOnlyUsdcContract,
+    readOnlyDonationManagerContract,
+    shouldRefetchDonationAmounts,
+  ]);
 
   const depositHandler = async () => {
     const donationAmount = Number(parseFloat(inputValue) * Math.pow(10, 6));
@@ -297,11 +306,14 @@ export default function Page() {
     };
 
     if (selectedChainIndex === 0) {
-      depositUsingEthereum();
+      await depositUsingEthereum();
+      setShouldRefetchDonationAmounts(true);
     } else if (selectedChainIndex === 1) {
-      depositUsingMantle();
+      await depositUsingMantle();
+      setShouldRefetchDonationAmounts(true);
     } else if (selectedChainIndex === 2) {
-      depositUsingLinea();
+      await depositUsingLinea();
+      setShouldRefetchDonationAmounts(true);
     }
   };
 
