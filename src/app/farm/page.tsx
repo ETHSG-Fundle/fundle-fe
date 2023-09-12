@@ -31,14 +31,16 @@ export default function Page() {
   const [sdaiStrategyContract, setSdaiStrategyContract] = useState<Contract>();
   const [daiContract, setDaiContract] = useState<Contract>();
   const [daiBalance, setDaiBalance] = useState<BigInt>(BigInt(0));
-  const [balances, setBalances] = useState<BigInt[]>([BigInt(0), BigInt(0)]);
+  const [balances, setBalances] = useState<BigInt[]>([BigInt(-1), BigInt(0)]);
   const [depositedBalances, setDepositedBalances] = useState<BigInt[]>([
     BigInt(0),
     BigInt(0),
   ]);
   const [totalYield, setTotalYield] = useState<number[]>([0.5, 0.5]);
   const [isLoading, setIsLoading] = useState<boolean[]>([false, false]);
-  // const [sdaiBalance, setSdaiBalance] = useState<BigInt>(BigInt(0));
+  const [shouldRefetchDonationAmounts, setShouldRefetchDonationAmounts] =
+    useState<boolean>(true);
+
   const [
     {
       chains, // the list of chains that web3-onboard was initialized with
@@ -97,13 +99,19 @@ export default function Page() {
           ]);
         const rawInternalTotalYield =
           internalUnderlying - internalUnderlyingSdaiLP;
-        const internalTotalYield = reduceDecimals(rawInternalTotalYield, 18);
+        const internalTotalYield = Math.abs(
+          reduceDecimals(rawInternalTotalYield, 18)
+        );
         setTotalYield([internalTotalYield, 0.5]);
       }
     };
 
-    getSdaiBalance();
-  }, [wallet, setChain]);
+    const performAction = async () => {
+      await getSdaiBalance();
+      setShouldRefetchDonationAmounts(false);
+    };
+    performAction();
+  }, [wallet, setChain, shouldRefetchDonationAmounts]);
 
   const primaryActionHandler = async () => {
     const depositAmountNumber = String(
@@ -119,10 +127,13 @@ export default function Page() {
 
         await tx.wait();
 
-        await sdaiStrategyContract?.deposit(
+        let depositTx = await sdaiStrategyContract?.deposit(
           addresses.daiContract,
           depositAmountNumber
         );
+
+        await depositTx.wait();
+
         setIsLoading([false, false]);
       } catch (e) {
         setIsLoading([false, false]);
@@ -143,11 +154,17 @@ export default function Page() {
       }
     };
 
-    if (activeTab1 === 0) {
-      deposit();
-    } else if (activeTab1 === 1) {
-      withdraw();
-    }
+    const performAction = async () => {
+      if (activeTab1 === 0) {
+        await deposit();
+        setShouldRefetchDonationAmounts(true);
+      } else if (activeTab1 === 1) {
+        await withdraw();
+        setShouldRefetchDonationAmounts(true);
+      }
+    };
+
+    performAction();
   };
 
   return (
@@ -163,7 +180,7 @@ export default function Page() {
             setInputValue={strategy.id === 0 ? setInputValue1 : setInputValue2}
             activeTab={strategy.id === 0 ? activeTab1 : activeTab2}
             setActiveTab={strategy.id === 0 ? setActiveTab1 : setActiveTab2}
-            userBalance={toUSDString(balances[strategy.id], 18)}
+            userBalance={wallet ? toUSDString(balances[strategy.id], 18) : "-"}
             depositedBalance={toUSDString(depositedBalances[strategy.id], 18)}
             depositHandler={primaryActionHandler}
             userYield={totalYield[strategy.id]?.toFixed(2)}

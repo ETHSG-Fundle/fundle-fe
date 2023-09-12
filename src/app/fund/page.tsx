@@ -64,6 +64,8 @@ export default function Page() {
   const [readOnlyDonationManagerContract, setReadOnlyDonationManagerContract] =
     useState<Contract>();
   const [readOnlyUsdcContract, setReadOnlyUsdcContract] = useState<Contract>();
+  const [shouldRefetchDonationAmounts, setShouldRefetchDonationAmounts] =
+    useState<boolean>(true);
   const [validInput, setValidInput] = useState<boolean>(false);
 
   const [
@@ -188,14 +190,21 @@ export default function Page() {
       ]);
       const rawTotalDonationsAmount =
         totalDonationsAmountForMainPool + totalDonationsAmountForBeneficiaries;
-      console.log("raw, ", rawTotalDonationsAmount);
       const totalDonationsAmount = reduceDecimals(rawTotalDonationsAmount, 6);
       if (!isNaN(totalDonationsAmount)) {
         setTotalDonations(totalDonationsAmount);
       }
     };
-    getTotalDonationsAmount();
-  }, [readOnlyUsdcContract, readOnlyDonationManagerContract]);
+    const runProcedure = async () => {
+      await getTotalDonationsAmount();
+      setShouldRefetchDonationAmounts(false);
+    };
+    runProcedure();
+  }, [
+    readOnlyUsdcContract,
+    readOnlyDonationManagerContract,
+    shouldRefetchDonationAmounts,
+  ]);
 
   const depositHandler = async () => {
     const donationAmount = Number(parseFloat(inputValue) * Math.pow(10, 6));
@@ -298,11 +307,14 @@ export default function Page() {
     };
 
     if (selectedChainIndex === 0) {
-      depositUsingEthereum();
+      await depositUsingEthereum();
+      setShouldRefetchDonationAmounts(true);
     } else if (selectedChainIndex === 1) {
-      depositUsingMantle();
+      await depositUsingMantle();
+      setShouldRefetchDonationAmounts(true);
     } else if (selectedChainIndex === 2) {
-      depositUsingLinea();
+      await depositUsingLinea();
+      setShouldRefetchDonationAmounts(true);
     }
   };
 
@@ -326,7 +338,7 @@ export default function Page() {
     <div className="flex bg-red-light p-8 rounded-md justify-between">
       <div className="flex flex-col">
         <h1>
-          Total Donations: ${totalDonations ? totalDonations.toFixed(2) : "0"}
+          Total Donations: ${totalDonations ? totalDonations.toFixed(2) : "-"}
         </h1>
         <p>
           Not sure who to donate to? Donate directly to the pool and let the
