@@ -23,6 +23,10 @@ export default function Home() {
     router.push("/farm");
   };
 
+  const goToRegister = () => {
+    router.push("/register");
+  };
+
   const landingSection = (
     <section className="flex h-[calc(100vh-76px)] items-center justify-between">
       <div className="max-w-lg mv-auto">
@@ -57,7 +61,7 @@ export default function Home() {
         <span className="font-bold">Are you an NPO? </span>
         Click here to register with us!
       </div>
-      <Button title="Register!"></Button>
+      <Button title="Register!" onClick={goToRegister}></Button>
     </div>
   );
   const infoCard1 = (
@@ -65,7 +69,8 @@ export default function Home() {
       <Image src={coinImage} width={100} height={100} alt="test" />
       <p className="text-center text-lg">Fund</p>
       <p className="text-sm text-slate-500 font-light text-center mb-4">
-         With quadratic funding, small amounts have big impacts on the cause you are supporting.
+        With quadratic funding, small amounts have big impacts on the cause you
+        are supporting.
       </p>
       <Button title="Fund" isRounded={true} onClick={goToFund} />
     </div>
@@ -76,8 +81,8 @@ export default function Home() {
       <Image src={farmImage} width={100} height={100} alt="test" />
       <p className="text-center text-lg">Farm</p>
       <p className="text-sm text-slate-500 font-light text-center mb-4">
-        Give nothing but time. Treat Fundle like a savings account
-        and you can help our NPOs without spending anything.
+        Give nothing but time. Treat Fundle like a savings account and you can
+        help our NPOs without spending anything.
       </p>
       <Button title="Farm" isRounded={true} onClick={goToFarm} />
     </div>
