@@ -64,6 +64,7 @@ export default function Page() {
   const [readOnlyDonationManagerContract, setReadOnlyDonationManagerContract] =
     useState<Contract>();
   const [readOnlyUsdcContract, setReadOnlyUsdcContract] = useState<Contract>();
+  const [validInput, setValidInput] = useState<boolean>(false);
 
   const [
     {
@@ -315,6 +316,11 @@ export default function Page() {
     return labels[tabId];
   };
 
+  const numberCheck = (input: string): void => {
+    console.log(/^\d+$/.test(input))
+    setValidInput(/^\d+$/.test(input))
+  };
+
   // JSX
   const banner = (
     <div className="flex bg-red-light p-8 rounded-md justify-between">
@@ -341,6 +347,7 @@ export default function Page() {
             unit="USDC"
             onChange={(value) => {
               setInputValue(value);
+              numberCheck(value)
             }}
           />
           <p>
@@ -352,6 +359,7 @@ export default function Page() {
             title="Donate"
             onClick={depositHandler}
             isLoading={isLoading}
+            isDisabled={inputValue === "" || !validInput}
           />
         </div>
       </div>

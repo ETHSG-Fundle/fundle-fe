@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import coin from "../assets/coin.png";
 import Tabs from "./Tabs";
@@ -29,6 +29,17 @@ export default function StrategyCard({
   userYield: string;
   isLoading: boolean;
 }) {
+  const numberCheck = (input: string): boolean => {
+    // setValidInput(/^\d+\.\d+$/.test(input) && /^\d+$/.test(input));
+    return /^\d+\.\d+$/.test(input) || /^\d+$/.test(input) || (input.length === 0)
+  };
+
+  const [validInput, setValidInput] = useState(false);
+
+  useEffect(() => {
+    setValidInput(numberCheck(inputValue));
+  }, [inputValue]);
+
   return (
     <div className="flex flex-col justify-center w-full p-8">
       <div className="rounded-tl-3xl rounded-tr-3xl bg-red px-8 py-4">
@@ -102,6 +113,7 @@ export default function StrategyCard({
           title={activeTab === 0 ? "Deposit" : "Withdraw"}
           onClick={depositHandler}
           isLoading={isLoading}
+          isDisabled={!validInput || inputValue === ""}
         />
       </div>
     </div>

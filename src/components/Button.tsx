@@ -5,6 +5,7 @@ export default function Button({
   isSecondary,
   isRounded,
   isLoading,
+  isDisabled,
   className,
   onClick,
 }: {
@@ -13,12 +14,14 @@ export default function Button({
   isRounded?: boolean;
   isLoading?: boolean;
   className?: string;
+  isDisabled?: boolean;
   onClick?: () => void;
 }) {
   const primaryButtonStyle =
     "bg-red hover:bg-red-hover active:bg-red-active text-white";
   const secondaryButtonStyle =
     "bg-white hover:bg-red-light active:bg-red-active";
+
 
   return (
     <button
@@ -27,8 +30,8 @@ export default function Button({
         isRounded ? "rounded-full" : "rounded-md"
       } border-2 border-red py-2 px-8 transition active:transition-none ${className} ${
         isSecondary ? secondaryButtonStyle : primaryButtonStyle
-      }`}
-      disabled={isLoading}
+      } disabled:bg-slate-300 disabled:border-slate-300`}
+      disabled={isLoading || isDisabled}
     >
       {isLoading ? (
         <>

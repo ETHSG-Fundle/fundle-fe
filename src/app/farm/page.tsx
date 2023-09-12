@@ -11,8 +11,8 @@ import { addresses } from "@/constants/addresses";
 import ERC20Abi from "../../ABIs/erc20.abi.json";
 
 export default function Page() {
-  const [inputValue1, setInputValue1] = useState("0");
-  const [inputValue2, setInputValue2] = useState("0");
+  const [inputValue1, setInputValue1] = useState("");
+  const [inputValue2, setInputValue2] = useState("");
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab2, setActiveTab2] = useState(0);
 
