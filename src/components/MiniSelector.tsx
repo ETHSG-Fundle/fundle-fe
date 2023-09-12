@@ -8,7 +8,6 @@ export default function MiniSelector({
   images,
   activeTab,
   setActiveTab,
-  setToolTip,
   isLoading,
 }: {
   labels: string[];

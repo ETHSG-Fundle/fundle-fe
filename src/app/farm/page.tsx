@@ -84,7 +84,7 @@ export default function Page() {
     };
 
     getSdaiBalance();
-  }, [wallet]);
+  }, [wallet, setChain]);
 
   const primaryActionHandler = async () => {
     const deposit = async () => {
